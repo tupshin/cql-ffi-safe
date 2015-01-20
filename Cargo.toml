@@ -1,0 +1,15 @@
+[project]
+name = "cql-ffi-safe"
+version = "0.0.1"
+authors = ["Tupshin Harper <tupshin@tupshin.com>"]
+
+[[bin]]
+name = "cql_ffi_safe_example"
+path = "src/bin/cql_ffi_safe_example.rs"
+
+[lib]
+name = "cql_ffi_safe"
+path = "src/lib.rs"
+
+[dependencies.cql_ffi]
+git = "https://github.com/tupshin/cql-ffi"
