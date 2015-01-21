@@ -3,6 +3,7 @@ extern crate cql_ffi;
 pub use cql_ffi::CassIteratorType;
 
 use cass_result::CassResult;
+use cass_value::CassValue;
 
 pub struct CassIterator<'a> {
     pub iterator:&'a mut cql_ffi::CassIterator
@@ -20,15 +21,29 @@ impl<'a> CassIterator<'a> {
     pub fn get_type(&mut self) -> CassIteratorType {
         unsafe{cql_ffi::cass_iterator_type(self.iterator)}
     }
+    
+    
 }
 
-
-    //~ pub fn cass_iterator_from_map(value: *const CassValue) -> *mut CassIterator;
-    //~ pub fn cass_iterator_from_schema(schema: *const CassSchema) -> *mut CassIterator;
-    //~ pub fn cass_iterator_from_schema_meta(meta: *const CassSchemaMeta) -> *mut CassIterator;
-    //~ pub fn cass_iterator_fields_from_schema_meta(meta: *const CassSchemaMeta) -> *mut CassIterator;
+//~ enum CassIteratees {
+    //~ row(CassRow),
+    //~ column(CassValue),
     
-    //~ pub fn cass_iterator_next(iterator: *mut CassIterator) -> cass_bool_t;
+//~ }
+
+//~ impl<'a, CassIteratees> Iterator for CassIterator<'a> {
+    //~ pub fn next(&mut self) -> Option<<Self as Iterator>::Item> {unsafe{
+        //~ match cql_ffi::cass_iterator_next(self.iterator) > 0 {
+            //~ true => Some(1u8),
+            //~ false => Some(2u8),
+        //~ }}
+    //~ }
+
+    //~ type Item = T ;
+//~ }
+
+
+    
     //~ pub fn cass_iterator_get_row(iterator: *mut CassIterator) -> *const CassRow;
     //~ pub fn cass_iterator_get_column(iterator: *mut CassIterator) -> *const CassValue;
     //~ pub fn cass_iterator_get_value(iterator: *mut CassIterator)-> *const CassValue;

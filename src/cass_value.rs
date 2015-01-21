@@ -137,4 +137,11 @@ impl<'a> CassValue<'a> {
     pub fn secondary_sub_type(self) -> CassValueType {unsafe{
         cql_ffi::cass_value_secondary_sub_type(self.value)
     }}
+
+    pub fn map_iter(&self) -> CassIterator {unsafe{
+        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_map(self.value)}
+    }}
+
+    
+    
 }

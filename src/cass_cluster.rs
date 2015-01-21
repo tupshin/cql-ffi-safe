@@ -4,7 +4,7 @@ use cass_error::CassError;
 use cass_ssl::CassSsl;
 
 pub struct CassCluster<'a> {
-    cluster:&'a mut cql_ffi::CassCluster
+    pub cluster:&'a mut cql_ffi::CassCluster
 }
 
 impl<'a> CassCluster<'a> {

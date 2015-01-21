@@ -2,6 +2,8 @@
 #![allow(unstable)]
 extern crate cql_ffi;
 extern crate uuid;
+extern crate libc;
+
 
 pub use cass_bytes::*;
 pub use cass_types::*;
