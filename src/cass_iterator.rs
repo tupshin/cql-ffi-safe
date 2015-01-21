@@ -4,6 +4,8 @@ pub use cql_ffi::CassIteratorType;
 
 use cass_result::CassResult;
 use cass_value::CassValue;
+use cass_row::CassRow;
+use cass_column::CassColumn;
 
 pub struct CassIterator<'a> {
     pub iterator:&'a mut cql_ffi::CassIterator
@@ -21,7 +23,18 @@ impl<'a> CassIterator<'a> {
     pub fn get_type(&mut self) -> CassIteratorType {
         unsafe{cql_ffi::cass_iterator_type(self.iterator)}
     }
+
+    pub fn get_row(&mut self) -> CassRow {
+        CassRow{row:&*cql_ffi::cass_iterator_get_row(self.iterator)}
+    }
+
+    pub fn get_column(&mut self) -> CassColumn {
+        CassColumn{column:cql_ffi::cass_iterator_get_column(self.iterator)}
+    }
     
+    pub fn get_value(&mut self) -> CassValue {
+        cql_ffi::cass_iterator_get_value(self.iterator)
+    }
     
 }
 
@@ -44,7 +57,6 @@ impl<'a> CassIterator<'a> {
 
 
     
-    //~ pub fn cass_iterator_get_row(iterator: *mut CassIterator) -> *const CassRow;
     //~ pub fn cass_iterator_get_column(iterator: *mut CassIterator) -> *const CassValue;
     //~ pub fn cass_iterator_get_value(iterator: *mut CassIterator)-> *const CassValue;
     //~ pub fn cass_iterator_get_map_key(iterator: *mut CassIterator) -> *const CassValue;
