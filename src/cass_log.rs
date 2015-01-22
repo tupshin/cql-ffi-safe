@@ -1,19 +1,20 @@
 extern crate cql_ffi;
 
-use std::num::Int;
 use libc::types;
 
-struct CassLogLevel {
+#[derive(Copy)]
+pub struct CassLogLevel {
     log_level:cql_ffi::CassLogLevel
 }
 
-struct CassLogCallBack {
-    callback:cql_ffi::CassLogCallback
+#[derive(Copy)]
+pub struct CassLogCallBack {
+    pub callback:cql_ffi::CassLogCallback
 }
 
 impl CassLogCallBack {
     //FIXME don't force passing in a void
-    fn set_callback(&self, data:  &mut types::common::c95::c_void) {unsafe{
+    pub fn set_callback(&self, data:  &mut types::common::c95::c_void) {unsafe{
         cql_ffi::cass_log_set_callback(self.callback, data)
     }}
 }

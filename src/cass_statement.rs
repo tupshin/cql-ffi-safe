@@ -72,15 +72,15 @@ impl<'a> CassStatement<'a> {
         }
     }}
 
-    pub fn bind_i32(&mut self, index: i32, value:u64) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_int32(self.statement, value, index) {
+    pub fn bind_i32(&mut self, index: u64, value:i32) -> Result<(),CassError> {unsafe{
+        match cql_ffi::cass_statement_bind_int32(self.statement, index, value) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }
     }}
 
-    pub fn bind_i64(&mut self, index: i64, value:u64) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_int64(self.statement, value, index) {
+    pub fn bind_i64(&mut self, index: u64, value:i64) -> Result<(),CassError> {unsafe{
+        match cql_ffi::cass_statement_bind_int64(self.statement, index, value) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }

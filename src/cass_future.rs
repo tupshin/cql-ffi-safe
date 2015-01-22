@@ -3,7 +3,7 @@ extern crate libc;
 
 //~ use libc::types::common::c95::c_void;
  
-use cql_ffi::CassFutureCallback;
+//use cql_ffi::CassFutureCallback;
 use cass_error::CassError;
 use cass_result::CassResult;
 use cass_prepared::CassPrepared;
@@ -13,6 +13,10 @@ use cass_string::CassString;
 pub struct CassFuture<'a> {
     pub future:&'a mut cql_ffi::CassFuture
 }
+
+//~ impl<'a> Future for CassFuture<'a> {
+
+//}
 
 impl<'a> CassFuture<'a> {
     //FIXME. How do I work with c_voids and callbacks?
@@ -32,7 +36,7 @@ impl<'a> CassFuture<'a> {
         unsafe{cql_ffi::cass_future_wait(self.future)}
     }
 
-    pub fn wait_timed(self, timeout_us: u64) -> bool {
+    pub fn wait_timed(&mut self, timeout_us: u64) -> bool {
         if unsafe{cql_ffi::cass_future_wait_timed(&mut*self.future, timeout_us)} > 0 {true} else {false}
     }
 
@@ -52,7 +56,14 @@ impl<'a> CassFuture<'a> {
         }
     }}
 
-    pub fn error_message(&mut self) -> CassString {unsafe{
+    pub fn is_error(&self) -> bool {
+        match self.error_code() {
+            Ok(_) => false,
+            Err(_) => true
+        }
+    }
+
+    pub fn error_message(&self) -> CassString {unsafe{
         CassString{string:cql_ffi::cass_future_error_message(self.future)}
     }}
 }

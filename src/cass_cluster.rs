@@ -14,9 +14,9 @@ impl<'a> CassCluster<'a> {
         CassCluster{cluster:unsafe{&mut*cql_ffi::cass_cluster_new()}}
     } 
 
-    pub fn set_contact_points(cluster:CassCluster, contact_points: &str) -> Result<(),CassError> {
-        match unsafe{cql_ffi::cass_cluster_set_contact_points(cluster.cluster, cql_ffi::str2ref(contact_points))} {
-            CASS_OK => Ok(()),
+    pub fn set_contact_points(&mut self, contact_points: &str) -> Result<&mut Self,CassError> {
+        match unsafe{cql_ffi::cass_cluster_set_contact_points(self.cluster, cql_ffi::str2ref(contact_points))} {
+            CASS_OK => Ok(self),
             rc => Err(CassError{error:rc})
         }
     }

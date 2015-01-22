@@ -16,33 +16,33 @@ pub struct CassUuidGen<'a> {
 }
 
 impl<'a> CassUuidGen<'a> {
-    fn new() -> Self {unsafe{
+    pub fn new() -> Self {unsafe{
         CassUuidGen{uuid_gen:&mut*cql_ffi::cass_uuid_gen_new()}
     }}
 
-    fn new_with_node(node: u64) -> Self {unsafe{
+    pub fn new_with_node(node: u64) -> Self {unsafe{
         CassUuidGen{uuid_gen:&mut*cql_ffi::cass_uuid_gen_new_with_node(node)}
     }}
 
-   fn time(self) -> CassUuid {unsafe{
+   pub fn time(self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
         cql_ffi::cass_uuid_gen_time(self.uuid_gen, output);
         CassUuid{uuid:*output}
     }}
 
-   fn gen_time(self) -> CassUuid {unsafe{
+   pub fn gen_time(self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
         cql_ffi::cass_uuid_gen_time(self.uuid_gen, output);
         CassUuid{uuid:*output}
     }}
 
-    fn gen_random(self) -> CassUuid {unsafe{
+    pub fn gen_random(self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
         cql_ffi::cass_uuid_gen_random(self.uuid_gen, output);
         CassUuid{uuid:*output}
     }}
 
-    fn gen_from_time(self, timestamp: u64) -> CassUuid {unsafe{
+    pub fn gen_from_time(self, timestamp: u64) -> CassUuid {unsafe{
         let output =  mem::zeroed();
         cql_ffi::cass_uuid_gen_from_time(self.uuid_gen, timestamp, output);
         CassUuid{uuid:*output}

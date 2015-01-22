@@ -1,8 +1,8 @@
 extern crate cql_ffi;
 
 use std::mem;
-use uuid::Uuid;
-use std::io::net::ip::IpAddr;
+//~ use uuid::Uuid;
+//~ use std::io::net::ip::IpAddr;
 
 pub use cql_ffi::CassValueType;
  
@@ -14,13 +14,15 @@ use cass_string::CassString;
 use cass_bytes::CassBytes;
 use cass_decimal::CassDecimal;
 
+#[derive(Copy)]
 pub struct CassValue<'a> {
     pub value:&'a cql_ffi::CassValue
 }
 
 impl<'a> CassValue<'a> {
     pub fn get_int32(self) -> Result<i32, CassError> {unsafe{
-        let output =  mem::zeroed();
+       assert!(self.get_type() == CassValueType::INT);
+        let ref mut output = 0i32;
         match cql_ffi::cass_value_get_int32(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
             err => Err(CassError{error:err})
@@ -28,7 +30,8 @@ impl<'a> CassValue<'a> {
     }}
 
     pub fn get_int64(self) -> Result<i64, CassError> {unsafe{
-        let output =  mem::zeroed();
+       assert!(self.get_type() == CassValueType::BIGINT);
+        let ref mut output = 0i64;
         match cql_ffi::cass_value_get_int64(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
             err => Err(CassError{error:err})
@@ -36,7 +39,8 @@ impl<'a> CassValue<'a> {
     }}
 
     pub fn get_float(self) -> Result<f32, CassError> {unsafe{
-        let output =  mem::zeroed();
+        assert!(self.get_type() == CassValueType::FLOAT);
+        let ref mut output = 0f32;
         match cql_ffi::cass_value_get_float(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
             err => Err(CassError{error:err})
@@ -44,7 +48,8 @@ impl<'a> CassValue<'a> {
     }}
 
     pub fn get_double(self) -> Result<f64, CassError> {unsafe{
-        let output =  mem::zeroed();
+        assert!(self.get_type() == CassValueType::DOUBLE);
+        let ref mut output = 0f64;
         match cql_ffi::cass_value_get_double(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
             err => Err(CassError{error:err})
@@ -52,9 +57,10 @@ impl<'a> CassValue<'a> {
     }}
 
     pub fn get_bool(self) -> Result<bool, CassError> {unsafe{
-        let output =  mem::zeroed();
-        match cql_ffi::cass_value_get_bool(self.value,output) {
-            cql_ffi::CassError::CASS_OK => Ok(if *output > 0 {true} else {false}),
+        assert!(self.get_type() == CassValueType::BOOLEAN);
+        let ref mut b_bln = 0u32;
+        match cql_ffi::cass_value_get_bool(self.value,b_bln) {
+            cql_ffi::CassError::CASS_OK => Ok(true),
             err => Err(CassError{error:err})
         }
     }}
@@ -80,7 +86,7 @@ impl<'a> CassValue<'a> {
     }}
 
     //FIXME this is bad api
-    fn collection_iter(self) -> CassIterator<'a> {unsafe{
+    pub fn collection_iter(self) -> CassIterator<'a> {unsafe{
         CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_collection(&*self.value)}
     }}
 

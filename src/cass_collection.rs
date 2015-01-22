@@ -8,8 +8,6 @@ use cass_bytes::CassBytes;
 use cass_uuid::CassUuid;
 use cass_inet::CassInet;
 use cass_decimal::CassDecimal;
-use cass_iterator::ToCassIterator;
-use cass_iterator::CassIterator;
 
 pub struct CassCollection<'a> {
     pub collection:&'a mut cql_ffi::CassCollection

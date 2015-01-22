@@ -4,6 +4,7 @@ use std::io::net::ip::IpAddr;
 use std::io::net::ip::Ipv4Addr;
 use std::io::net::ip::Ipv6Addr;
 
+#[derive(Copy)]
 pub struct CassInet {
     pub inet:cql_ffi::CassInet
 }

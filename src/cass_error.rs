@@ -3,7 +3,7 @@ extern crate cql_ffi;
 use std::ffi::c_str_to_bytes;
 use std::str;
 
-#[derive(Copy)]
+#[derive(Copy,Show)]
 pub struct CassError {
     pub error:cql_ffi::CassError
 }

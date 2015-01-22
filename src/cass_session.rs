@@ -3,10 +3,7 @@ extern crate cql_ffi;
 use cass_future::CassFuture;
 use cass_cluster::CassCluster;
 use cass_statement::CassStatement;
-use cass_batch::CassBatch;
-use cass_error::CassError;
 use cass_string::CassString;
-use cass_schema::CassSchema;
 
 pub struct CassSession<'a> {
     session:&'a mut cql_ffi::CassSession
@@ -28,7 +25,7 @@ impl<'a> CassSession<'a> {
         CassFuture{future:&mut*cql_ffi::cass_session_close(&mut*self.session)}
     }}
 
-    pub fn connect(&mut self, cluster:CassCluster) -> CassFuture {unsafe{
+    pub fn connect(&mut self, cluster:&CassCluster) -> CassFuture {unsafe{
         CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, cluster.cluster)}
     }}
 
