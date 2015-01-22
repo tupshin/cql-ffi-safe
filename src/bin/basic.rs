@@ -16,7 +16,6 @@ struct Basic {
 static INSERT_QUERY_CMD:&'static str = "INSERT INTO examples.basic (key, bln, flt, dbl, i32, i64) VALUES (?, ?, ?, ?, ?, ?);";
 static SELECT_QUERY_CMD:&'static str = "SELECT * FROM examples.basic WHERE key = ?";
 static CREATE_KEYSPACE_CMD:&'static str = "CREATE KEYSPACE IF NOT EXISTS examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '3' };";
-static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.basic (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query,0);
@@ -66,28 +65,28 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
 
 fn main() {
     match CassCluster::new().set_contact_points("127.0.0.1") {
-        Err(err) => panic!(err),
         Ok(cluster) => {
-    let mut session = CassSession::new();
-    let input = Basic{bln:true, flt:0.001f32, dbl:0.0002f64, i32:1, i64:2 };
-    session.connect(cluster).wait();
+            let mut session = CassSession::new();
+            let input = Basic{bln:true, flt:0.001f32, dbl:0.0002f64, i32:1, i64:2 };
+            session.connect(cluster).wait();
             session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
-            match execute_query(&mut session,CREATE_TABLE_CMD) {
+            //FIXME if this is moved up above then weird crap happens, something is stomping on memory
+            let CREATE_TABLE_CMD = "CREATE TABLE IF NOT EXISTS examples.basic (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
+            match execute_query(&mut session, CREATE_TABLE_CMD) {
                 Err(err) => panic!("err={:?}",err),
                 Ok(_) => {}
             }
             insert_into_basic(&mut session,"test", input).unwrap();
             let output = select_from_basic(&mut session,"test").unwrap();
-            println!("{:?}",input);
-            println!("{:?}",output);
+            session.close().wait();
+
+            println!("{:?}\n{:?}",input,output);
             assert!(input.bln == output.bln);
             assert!(input.flt == output.flt);
             assert!(input.dbl == output.dbl);
             assert!(input.i32 == output.i32);
             assert!(input.i64 == output.i64);
-            let close_future = session.close();
-            close_future.wait();;
-
-        }
+        },
+        Err(err) => panic!(err)
     }
 }
