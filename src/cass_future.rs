@@ -9,7 +9,7 @@ use cass_result::CassResult;
 use cass_prepared::CassPrepared;
 use cass_string::CassString;
 
-
+#[derive(Show)]
 pub struct CassFuture<'a> {
     pub future:&'a mut cql_ffi::CassFuture
 }
@@ -32,8 +32,9 @@ impl<'a> CassFuture<'a> {
         if unsafe{cql_ffi::cass_future_ready(&mut*self.future)} > 0 {true} else {false}
     }
 
-    pub fn wait(&self) {
-        unsafe{cql_ffi::cass_future_wait(self.future)}
+    pub fn wait(&'a self) -> &'a Self {
+        unsafe{cql_ffi::cass_future_wait(self.future)};
+        self
     }
 
     pub fn wait_timed(&mut self, timeout_us: u64) -> bool {

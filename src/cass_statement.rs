@@ -14,13 +14,26 @@ use cql_ffi::CassError::CASS_OK;
 
 use std::str::FromStr;
 
+pub enum CassBindable{
+    BOOL(bool),
+    I32(i32),
+    I64(i64),
+    F32(f32),
+    F64(f64),
+    STR(String),
+}
+
+
 pub struct CassStatement<'a> {
     pub statement:&'a mut cql_ffi::CassStatement
 }
 impl<'a> CassStatement<'a> {
     pub fn new(query:&str, parameter_count: u64) -> CassStatement {unsafe{
+        println!("param_count: {}",parameter_count);
         let string:CassString = FromStr::from_str(query).unwrap();
-        CassStatement{statement:&mut*cql_ffi::cass_statement_new(string.string, parameter_count)}
+        println!("cassstring: {:?}",string);
+        let statement = cql_ffi::cass_statement_new(string.string, parameter_count);
+        CassStatement{statement:&mut*statement}
     }}
 
     pub fn add_key_index(&mut self, index: u64) -> Result<(),CassError> {unsafe{
@@ -64,6 +77,22 @@ impl<'a> CassStatement<'a> {
             rc => Err(CassError{error:rc})
         }
     }}
+
+    pub fn bind_all(&mut self, values:Vec<CassBindable>) -> Result<(),CassError> {
+        let mut idx = 1;
+        for value in values.iter() {
+            match value {
+                &CassBindable::BOOL(val) => try!(self.bind_bool(idx, val)),
+                &CassBindable::I32(val) => try!(self.bind_i32(idx,val)),
+                &CassBindable::I64(val) => try!(self.bind_i64(idx,val)),
+                &CassBindable::F32(val) => try!(self.bind_f32(idx,val)),
+                &CassBindable::F64(val) => try!(self.bind_f64(idx,val)),
+                &CassBindable::STR(ref val) => try!(self.bind_string(idx,val.as_slice())),
+            };
+            idx += 1;
+        }
+        Ok(())
+    }
 
     pub fn bind_null(&mut self, index: u64) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_statement_bind_null(self.statement, index) {

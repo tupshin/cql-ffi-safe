@@ -17,7 +17,6 @@ impl<'a> Drop for CassBatch<'a> {
     }
 }
 
-
 impl<'a> CassBatch<'a> {
     pub fn new(_type:CassBatchType) -> CassBatch<'a> {unsafe{
         CassBatch{batch:&mut*cql_ffi::cass_batch_new(_type)}

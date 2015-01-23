@@ -1,6 +1,11 @@
 [project]
 name = "cql-ffi-safe"
-version = "0.0.2"
+description = "A safe wrapper of the cql-ffi crate"
+license = "Apache-2.0"
+homepage = "https://github.com/tupshin/cql-ffi"
+repository = "https://github.com/tupshin/cql-ffi"
+version = "0.0.3"
+
 authors = ["Tupshin Harper <tupshin@tupshin.com>"]
 
 [[bin]]
@@ -12,7 +17,7 @@ name = "cql_ffi_safe"
 path = "src/lib.rs"
 
 [dependencies.cql_ffi]
-git = "https://github.com/tupshin/cql-ffi"
+cql_ffi = "0.0.3"
 
 [dependencies.uuid]
 uuid = "0.1.7"

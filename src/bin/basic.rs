@@ -4,7 +4,7 @@ extern crate cql_ffi_safe;
 
 use cql_ffi_safe::*;
 
-#[derive(Show,Copy)]
+#[derive(Show,Copy,PartialEq)]
 struct Basic {
     bln:bool,
     flt:f32,
@@ -27,12 +27,15 @@ fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError>
 fn insert_into_basic(session:&mut CassSession, key:&str, basic:Basic) -> Result<(),CassError> {
     let query=INSERT_QUERY_CMD;
     let mut statement = CassStatement::new(query, 6);
-    try!(statement.bind_string(0, key));
-    try!(statement.bind_bool(1, basic.bln));
-    try!(statement.bind_f32(2, basic.flt));
-    try!(statement.bind_f64(3, basic.dbl));
-    try!(statement.bind_i32(4, basic.i32));
-    try!(statement.bind_i64(5, basic.i64));
+    //FIXME with a macro that automatically does this for an arbitrary struct
+    try!(statement.bind_all(vec!(
+        CassBindable::STR(key.to_string()),
+        CassBindable::BOOL(basic.bln),
+        CassBindable::F32(basic.flt),
+        CassBindable::F64(basic.dbl),
+        CassBindable::I32(basic.i32),
+        CassBindable::I64(basic.i64)
+    )));
     session.execute(statement).wait();
     Ok(())
 }
@@ -50,9 +53,8 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
         (_,false) => panic!(),
         (CassIteratorType::RESULT,true) => return {
             let row = iterator.get_row();
-            let bln = row.get_column(1);
             Ok(Basic{
-                bln:try!(bln.get_bool()),
+                bln:try!(row.get_column(1).get_bool()),
                 dbl:try!(row.get_column(2).get_double()),
                 flt:try!(row.get_column(3).get_float()),
                 i32:try!(row.get_column(4).get_int32()),
@@ -71,8 +73,8 @@ fn main() {
             session.connect(cluster).wait();
             session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
             //FIXME if this is moved up above then weird crap happens, something is stomping on memory
-            let CREATE_TABLE_CMD = "CREATE TABLE IF NOT EXISTS examples.basic (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
-            match execute_query(&mut session, CREATE_TABLE_CMD) {
+            let create_table_cmd = "CREATE TABLE IF NOT EXISTS examples.basic (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
+            match execute_query(&mut session, create_table_cmd) {
                 Err(err) => panic!("err={:?}",err),
                 Ok(_) => {}
             }
@@ -81,11 +83,7 @@ fn main() {
             session.close().wait();
 
             println!("{:?}\n{:?}",input,output);
-            assert!(input.bln == output.bln);
-            assert!(input.flt == output.flt);
-            assert!(input.dbl == output.dbl);
-            assert!(input.i32 == output.i32);
-            assert!(input.i64 == output.i64);
+            assert!(input == output);
         },
         Err(err) => panic!(err)
     }
