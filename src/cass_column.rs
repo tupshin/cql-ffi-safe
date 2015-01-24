@@ -7,6 +7,7 @@ use cass_inet::CassInet;
 use cass_string::CassString;
 use cass_bytes::CassBytes;
 use cass_decimal::CassDecimal;
+use cass_iterator::CassIterator;
 
 use std::mem;
 
@@ -22,8 +23,11 @@ impl<'a> CassColumn<'a> {
         cql_ffi::cass_value_type(self.column)
     }}
 
+    pub fn collection_iter(self) -> CassIterator<'a> {unsafe{
+        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_collection(&*self.column)}
+    }}
 
-  pub fn get_int32(self) -> Result<i32, CassError> {unsafe{
+    pub fn get_int32(self) -> Result<i32, CassError> {unsafe{
        assert!(self.get_type() == CassValueType::INT);
         let ref mut output = 0i32;
         match cql_ffi::cass_value_get_int32(self.column,output) {
