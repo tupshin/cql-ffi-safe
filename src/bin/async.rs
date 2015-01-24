@@ -15,7 +15,7 @@ static INSERT_QUERY_CMD:&'static str = "INSERT INTO examples.async (key, bln, fl
 static CREATE_KEYSPACE_CMD:&'static str = "CREATE KEYSPACE IF NOT EXISTS examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1' };";
 static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.async (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
 
-fn connect_session(mut session:CassSession, mut cluster:CassCluster) -> Result<(),CassError> {unsafe{
+fn connect_session(session:&mut CassSession, mut cluster:CassCluster) -> Result<(),CassError> {unsafe{
     let future = session.connect(&mut cluster);
     future.wait();
     match future.error_code() {
@@ -26,7 +26,7 @@ fn connect_session(mut session:CassSession, mut cluster:CassCluster) -> Result<(
     
 }}
 
-fn execute_query(mut session: CassSession, query: &str) -> Result<(),CassError> {unsafe{
+fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {unsafe{
     let statement = CassStatement::new(query.clone(),0);
     let future = session.execute(statement);
     future.wait();
@@ -36,7 +36,7 @@ fn execute_query(mut session: CassSession, query: &str) -> Result<(),CassError> 
     }
 }}
 
-fn insert_into_async(mut session: CassSession, key:&str) -> Result<(),CassError> {unsafe{
+fn insert_into_async(session: &mut CassSession, key:&str) -> Result<(),CassError> {unsafe{
     let mut futures = Vec::<CassFuture>::new();
     for i in (0..NUM_CONCURRENT_REQUESTS) {
         let mut statement = CassStatement::new(INSERT_QUERY_CMD, 6);
@@ -46,9 +46,7 @@ fn insert_into_async(mut session: CassSession, key:&str) -> Result<(),CassError>
         statement.bind_f64(3, i.to_f64().unwrap() / 200.0);
         statement.bind_i32(4, i.to_i32().unwrap() * 10);
         statement.bind_i64(5, i.to_i64().unwrap() * 100);
-        let future = session.execute(statement);
-        futures.push(future);
-        //cass_statement_free(statement);
+        futures.push(session.execute(statement));
     }
     for mut future in futures.iter_mut() {
         future.wait();
@@ -63,7 +61,7 @@ fn insert_into_async(mut session: CassSession, key:&str) -> Result<(),CassError>
 pub fn main() {unsafe{
     match CassCluster::new().set_contact_points("127.0.0.1,127.0.0.2,127.0.0.3") {
         Ok(cluster) => {
-            let mut session = CassSession::new();
+            let ref mut session = CassSession::new();
             session.connect(cluster).wait();
             session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
             session.execute(CassStatement::new(CREATE_TABLE_CMD, 0));
