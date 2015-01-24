@@ -41,8 +41,8 @@ impl<'a> CassFuture<'a> {
         if unsafe{cql_ffi::cass_future_wait_timed(&mut*self.future, timeout_us)} > 0 {true} else {false}
     }
 
-    pub fn get_result(&mut self) -> CassResult {unsafe{
-        CassResult{result:&*cql_ffi::cass_future_get_result(self.future)}
+    pub fn get_result(&mut self) -> Option<CassResult> {unsafe{
+        Some(CassResult{result:&*cql_ffi::cass_future_get_result(self.future)})
     }}
 
     pub fn get_prepared<'b>(&self) -> CassPrepared<'b> {unsafe{

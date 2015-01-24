@@ -52,7 +52,7 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
     future.wait();
     try!(future.error_code());
     let result = future.get_result();
-    let mut iterator = result.iter();
+    let mut iterator = result.unwrap().iter();
     match (iterator.get_type(),iterator.has_next()) {
         (_,false) => panic!(),
         (CassIteratorType::RESULT,true) => return {
@@ -68,7 +68,7 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
         (iter_type,true) => {panic!("wasn't expecting iterator type: {:?}", iter_type)}
     }
     //FIXME it is temporarily necessary to free your own results, as the Drop trait in cass_result.rs results in memory corruption
-    unsafe{cql_ffi::cass_result_free(result.result)};
+    unsafe{cql_ffi::cass_result_free(result.unwrap().result)};
 }
 
 
