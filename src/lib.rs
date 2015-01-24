@@ -1,5 +1,6 @@
 #![feature(unsafe_destructor)]
 #![allow(unstable)]
+#![allow(unsafe_destructor)]
 extern crate cql_ffi;
 extern crate uuid;
 extern crate libc;

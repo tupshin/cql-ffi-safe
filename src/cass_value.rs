@@ -1,18 +1,8 @@
 extern crate cql_ffi;
 
-use std::mem;
-//~ use uuid::Uuid;
-//~ use std::io::net::ip::IpAddr;
-
 pub use cql_ffi::CassValueType;
  
-use cass_error::CassError;
-use cass_uuid::CassUuid;
-use cass_inet::CassInet;
 use cass_iterator::CassIterator;
-use cass_string::CassString;
-use cass_bytes::CassBytes;
-use cass_decimal::CassDecimal;
 
 #[derive(Copy)]
 pub struct CassValue<'a> {

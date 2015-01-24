@@ -25,7 +25,7 @@ impl<'a> CassSession<'a> {
         CassFuture{future:&mut*cql_ffi::cass_session_close(&mut*self.session)}
     }}
 
-    pub fn connect(&mut self, cluster:&CassCluster) -> CassFuture {unsafe{
+    pub fn connect(&mut self, cluster:&CassCluster) -> CassFuture<'static> {unsafe{
         CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, cluster.cluster)}
     }}
 

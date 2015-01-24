@@ -87,7 +87,7 @@ fn main() {
                 Ok(response) => {
                     println!("response {:?}",response);
                 }
-                Err(err) => {}//panic!(err)
+                Err(err) => {println!("{:?}",err)}
             }
             match select_from_basic(&mut session,"test") {
                 Ok(output) => {
