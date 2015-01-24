@@ -23,9 +23,6 @@ impl<'a> CassValue<'a> {
    
 
     //FIXME this is bad api
-    pub fn collection_iter(self) -> CassIterator<'a> {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_collection(&*self.value)}
-    }}
 
 
     pub fn get_type(self) -> CassValueType {unsafe{

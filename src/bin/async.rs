@@ -23,7 +23,6 @@ fn connect_session(session:&mut CassSession, mut cluster:CassCluster) -> Result<
         _=> panic!("{:?}",future)
     }
     //cass_future_free(future);
-    
 }}
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {unsafe{
@@ -40,14 +39,16 @@ fn insert_into_async(session: &mut CassSession, key:&str) -> Result<(),CassError
     let mut futures = Vec::<CassFuture>::new();
     for i in (0..NUM_CONCURRENT_REQUESTS) {
         let mut statement = CassStatement::new(INSERT_QUERY_CMD, 6);
-        statement.bind_string(0, key);
+        let mut key = key.to_string();
+        key.push_str(&*i.to_string());
+        statement.bind_string(0, key.as_slice());
         statement.bind_bool( 1, if i % 2 == 0 {true} else {false});
         statement.bind_f32(2, i.to_f32().unwrap() / 2.0f32);
         statement.bind_f64(3, i.to_f64().unwrap() / 200.0);
         statement.bind_i32(4, i.to_i32().unwrap() * 10);
         statement.bind_i64(5, i.to_i64().unwrap() * 100);
-        //FIXME lifetime problem
-        futures.push(session.execute(statement));
+        let future = session.execute(statement);
+        futures.push(future);
     }
     for mut future in futures.iter_mut() {
         future.wait();

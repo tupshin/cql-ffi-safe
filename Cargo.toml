@@ -12,9 +12,9 @@ authors = ["Tupshin Harper <tupshin@tupshin.com>"]
 name = "basic"
 path = "src/bin/basic.rs"
 
-# [[bin]]
-# name = "async"
-# path = "src/bin/async.rs"
+[[bin]]
+name = "async"
+path = "src/bin/async.rs"
 
 [lib]
 name = "cql_ffi_safe"

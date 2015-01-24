@@ -17,7 +17,7 @@ impl<'a> Drop for CassSession<'a> {
 }
 
 impl<'a> CassSession<'a> {
-    pub fn new() -> CassSession<'a> {unsafe{
+    pub fn new() -> CassSession<'static> {unsafe{
         CassSession{session:&mut*cql_ffi::cass_session_new()}
     }}
 
@@ -29,11 +29,11 @@ impl<'a> CassSession<'a> {
         CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, cluster.cluster)}
     }}
 
-    pub fn prepare(&mut self, query:CassString) -> CassFuture {unsafe{
+    pub fn prepare(&mut self, query:CassString) -> CassFuture<'static> {unsafe{
         CassFuture{future:&mut*cql_ffi::cass_session_prepare(&mut*self.session, query.string)}
     }}
 
-    pub fn execute(&mut self, statement:CassStatement) -> CassFuture {unsafe{
+    pub fn execute(&mut self, statement:CassStatement) -> CassFuture<'static> {unsafe{
         CassFuture{future:&mut*cql_ffi::cass_session_execute(&mut*self.session, statement.statement)}
     }}
 
