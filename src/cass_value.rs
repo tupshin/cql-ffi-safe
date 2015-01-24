@@ -147,7 +147,4 @@ impl<'a> CassValue<'a> {
     pub fn map_iter(&self) -> CassIterator {unsafe{
         CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_map(self.value)}
     }}
-
-    
-    
 }

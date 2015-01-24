@@ -1,7 +1,10 @@
 extern crate cql_ffi;
+extern crate libc;
 
+use libc::types::os::arch::c95::c_char;
 use cass_error::CassError;
 use cass_ssl::CassSsl;
+use std::ffi::CString;
 
 use cql_ffi::CassError::CASS_OK;
 
@@ -15,7 +18,8 @@ impl<'a> CassCluster<'a> {
     } 
 
     pub fn set_contact_points(&mut self, contact_points: &str) -> Result<&mut Self,CassError> {
-        match unsafe{cql_ffi::cass_cluster_set_contact_points(self.cluster, cql_ffi::str2ref(contact_points))} {
+        println!("contact points: {:?}",contact_points);
+        match unsafe{cql_ffi::cass_cluster_set_contact_points(self.cluster, CString::from_slice(contact_points.as_bytes()).as_ptr() as *const c_char)} {
             CASS_OK => Ok(self),
             rc => Err(CassError{error:rc})
         }

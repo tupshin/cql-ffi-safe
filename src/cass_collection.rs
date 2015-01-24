@@ -1,7 +1,5 @@
 extern crate cql_ffi;
 
-use std::ffi::CString;
-
 pub use cql_ffi::CassCollectionType;
 use cass_error::CassError;
 use cass_bytes::CassBytes;
@@ -63,7 +61,7 @@ impl<'a> CassCollection<'a> {
     }    
 
     pub fn append_string(self, value: &str) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_collection_append_string(self.collection,cql_ffi::cass_string_init(CString::from_slice(value.as_bytes()).as_ptr()))};
+        let cl_result = unsafe{cql_ffi::cass_collection_append_string(self.collection,cql_ffi::cass_string_init2(value.as_ptr() as *const i8, value.len() as u64))};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))

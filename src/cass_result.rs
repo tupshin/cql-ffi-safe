@@ -44,7 +44,8 @@ impl<'a> CassResult<'a> {
 #[unsafe_destructor]
 impl<'a> Drop for CassResult<'a> {
     fn drop(&mut self) {unsafe{
-        cql_ffi::cass_result_free(self.result)
+    //FIXME why does this lead to memory errors?
+    //    cql_ffi::cass_result_free(self.result)
     }}
 }
    

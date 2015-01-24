@@ -58,10 +58,10 @@ impl<'a> CassIterator<'a> {
 
 }
 
-enum CassIteratee<'a> {
-    Row(CassRow<'a>),
-    Column(CassValue<'a>),
-}
+//~ enum CassIteratee<'a> {
+    //~ Row(CassRow<'a>),
+    //~ Column(CassValue<'a>),
+//~ }
 
 //~ impl<'a, Self> Iterator for CassIterator<'a> {
     //~ type Item = CassRow;
