@@ -5,6 +5,7 @@ use cass_iterator::CassIterator;
 use cass_string::CassString;
 use cass_value::CassValueType;
 use cass_row::CassRow;
+use cass_error::CassError;
 
 pub struct CassResult<'a> {
     pub result:&'a cql_ffi::CassResult
@@ -31,8 +32,8 @@ impl<'a> CassResult<'a> {
         cql_ffi::cass_result_column_type(self.result, index)
     }}
 
-    pub fn first_row(self) -> CassRow<'a> {unsafe{
-        CassRow{row:&*cql_ffi::cass_result_first_row(self.result)}
+    pub fn first_row(self) -> Result<CassRow<'a>,CassError> {unsafe{
+        Ok(CassRow{row:&*cql_ffi::cass_result_first_row(self.result)})
     }}
 
     pub fn has_more_pages(self) -> bool {unsafe{

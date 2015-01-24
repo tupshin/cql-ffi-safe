@@ -46,6 +46,7 @@ fn insert_into_async(session: &mut CassSession, key:&str) -> Result<(),CassError
         statement.bind_f64(3, i.to_f64().unwrap() / 200.0);
         statement.bind_i32(4, i.to_i32().unwrap() * 10);
         statement.bind_i64(5, i.to_i64().unwrap() * 100);
+        //FIXME lifetime problem
         futures.push(session.execute(statement));
     }
     for mut future in futures.iter_mut() {
