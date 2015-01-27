@@ -1,6 +1,6 @@
 extern crate cql_ffi;
 
-use cass_bytes::CassBytes;
+use bytes::CassBytes;
 use std::default::Default;
 
 #[derive(Copy)]

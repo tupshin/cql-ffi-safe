@@ -1,14 +1,14 @@
 extern crate cql_ffi;
 
-use cass_string::CassString;
-use cass_error::CassError;
-use cass_result::CassResult;
-use cass_bytes::CassBytes;
+use string::CassString;
+use error::CassError;
+use result::CassResult;
+use bytes::CassBytes;
 use cass_uuid::CassUuid;
-use cass_inet::CassInet;
-use cass_decimal::CassDecimal;
-use cass_collection::CassCollection;
-use cass_value::CassBindable;
+use inet::CassInet;
+use decimal::CassDecimal;
+use collection::CassCollection;
+use value::CassBindable;
 
 use cql_ffi::CassConsistency;
 use cql_ffi::CassError::CASS_OK;

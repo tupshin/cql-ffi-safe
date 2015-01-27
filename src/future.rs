@@ -4,10 +4,10 @@ extern crate libc;
 //~ use libc::types::common::c95::c_void;
  
 //use cql_ffi::CassFutureCallback;
-use cass_error::CassError;
-use cass_result::CassResult;
-use cass_prepared::CassPrepared;
-use cass_string::CassString;
+use error::CassError;
+use result::CassResult;
+use prepared::CassPrepared;
+use string::CassString;
 
 pub struct CassFuture<'a> {
     pub future:&'a mut cql_ffi::CassFuture

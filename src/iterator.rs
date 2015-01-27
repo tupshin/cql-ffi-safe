@@ -2,10 +2,10 @@ extern crate cql_ffi;
 
 pub use cql_ffi::CassIteratorType;
 
-use cass_value::CassValue;
-use cass_row::CassRow;
-use cass_column::CassColumn;
-use cass_schema::CassSchemaMeta;
+use value::CassValue;
+use row::CassRow;
+use column::CassColumn;
+use schema::CassSchemaMeta;
 
 pub struct CassIterator<'a> {
     pub iterator:&'a mut cql_ffi::CassIterator

@@ -1,8 +1,8 @@
 extern crate cql_ffi;
 
-use cass_string::CassString;
-use cass_value::CassValue;
-use cass_iterator::CassIterator;
+use string::CassString;
+use value::CassValue;
+use iterator::CassIterator;
 
 pub use cql_ffi::CassSchemaMetaType;
 

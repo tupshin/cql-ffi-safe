@@ -1,9 +1,9 @@
 extern crate cql_ffi;
 extern crate libc;
 
-use cass_iterator::CassIterator;
-use cass_value::CassValue;
-use cass_column::CassColumn;
+use iterator::CassIterator;
+use value::CassValue;
+use column::CassColumn;
 
 #[derive(Copy)]
 pub struct CassRow<'a> {

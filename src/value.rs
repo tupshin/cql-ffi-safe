@@ -3,15 +3,12 @@ extern crate uuid;
 
 pub use cql_ffi::CassValueType;
  
-use cass_iterator::CassIterator;
-use cass_error::CassError;
-use cass_inet::CassInet;
-use cass_decimal::CassDecimal;
-use cass_bytes::CassBytes;
-use cass_string::CassString;
+use error::CassError;
+use decimal::CassDecimal;
+use bytes::CassBytes;
+use string::CassString;
 use cass_uuid::CassUuid;
 
-use uuid::Uuid;
 use std::mem;
 
 #[derive(Copy)]

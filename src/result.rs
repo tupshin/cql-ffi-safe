@@ -1,11 +1,11 @@
 extern crate cql_ffi;
 extern crate libc;
 
-use cass_iterator::CassIterator;
-use cass_string::CassString;
-use cass_value::CassValueType;
-use cass_row::CassRow;
-use cass_error::CassError;
+use iterator::CassIterator;
+use string::CassString;
+use value::CassValueType;
+use row::CassRow;
+use error::CassError;
 
 pub struct CassResult<'a> {
     pub result:&'a cql_ffi::CassResult

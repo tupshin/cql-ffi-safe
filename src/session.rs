@@ -1,12 +1,13 @@
 extern crate cql_ffi;
 
-use cass_future::CassFuture;
-use cass_cluster::CassCluster;
-use cass_statement::CassStatement;
-use cass_batch::CassBatch;
-use cass_string::CassString;
-use cass_error::CassError;
-use cass_prepared::CassPrepared;
+use future::CassFuture;
+use cluster::CassCluster;
+use statement::CassStatement;
+use batch::CassBatch;
+use string::CassString;
+use error::CassError;
+use prepared::CassPrepared;
+
 use std::str::FromStr;
 
 pub struct CassSession<'a> {
@@ -46,12 +47,12 @@ impl<'a> CassSession<'a> {
         CassFuture{future:&mut*cql_ffi::cass_session_execute_batch(&mut*self.session, batch.batch)}
     }}
 
-    pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared<'a>,CassError> {unsafe{
+    pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared<'a>,CassError> {
         let future:CassFuture = self.prepare(query.to_string());
         future.wait();
         let prepared = future.get_prepared();
         Ok(prepared)
-    }}
+    }
 
 
 

@@ -2,8 +2,8 @@ extern crate cql_ffi;
 extern crate libc;
 
 use libc::types::os::arch::c95::c_char;
-use cass_error::CassError;
-use cass_ssl::CassSsl;
+use error::CassError;
+use ssl::CassSsl;
 use std::ffi::CString;
 
 use cql_ffi::CassError::CASS_OK;

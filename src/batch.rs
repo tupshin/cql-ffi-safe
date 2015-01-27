@@ -1,8 +1,8 @@
 extern crate cql_ffi;
 
-use cass_consistency::CassConsistency;
-use cass_error::CassError;
-use cass_statement::CassStatement;
+use consistency::CassConsistency;
+use error::CassError;
+use statement::CassStatement;
 
 pub use cql_ffi::CassBatchType;
 
