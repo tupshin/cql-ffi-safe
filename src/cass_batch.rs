@@ -7,7 +7,7 @@ use cass_statement::CassStatement;
 pub use cql_ffi::CassBatchType;
 
 pub struct CassBatch<'a> {
-    batch:&'a mut cql_ffi::CassBatch
+    pub batch:&'a mut cql_ffi::CassBatch
 }
 
 #[unsafe_destructor]
@@ -22,16 +22,16 @@ impl<'a> CassBatch<'a> {
         CassBatch{batch:&mut*cql_ffi::cass_batch_new(_type)}
     }}
 
-    pub fn set_consistency(batch: CassBatch, consistency: CassConsistency) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_batch_set_consistency(batch.batch, consistency)};
+    pub fn set_consistency(&self, consistency: CassConsistency) -> Result<(),CassError> {
+        let cl_result = unsafe{cql_ffi::cass_batch_set_consistency(self.batch, consistency)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))
         }
     }
     
-    pub fn cass_batch_add_statement(batch: CassBatch, statement: CassStatement) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_batch_add_statement(batch.batch, statement.statement)};
+    pub fn add_statement(&self, statement: CassStatement) -> Result<(),CassError> {
+        let cl_result = unsafe{cql_ffi::cass_batch_add_statement(self.batch, statement.statement)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))

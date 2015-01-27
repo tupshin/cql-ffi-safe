@@ -49,4 +49,4 @@ impl<'a> Drop for CassResult<'a> {
     //    cql_ffi::cass_result_free(self.result)
     }}
 }
-   
+

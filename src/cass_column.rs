@@ -88,12 +88,12 @@ impl<'a> CassColumn<'a> {
     }}
 
     //FIXME this should emit a uuid::Uuid instead of a CassUuid
-    pub fn get_inet(&self) -> Result<CassInet, CassError> {
-        match self.get_inet() {
-            Ok(inet) => Ok(inet),
-            Err(err) => Err(err)
-        }
-    }
+    //~ pub fn get_inet(&self) -> Result<CassInet, CassError> {
+        //~ match self.get_inet() {
+            //~ Ok(inet) => Ok(inet),
+            //~ Err(err) => Err(err)
+        //~ }
+    //~ }
 
     pub fn get_string(&self) -> Result<CassString, CassError> {unsafe{
         assert!(self.get_type() == CassValueType::BOOLEAN);
