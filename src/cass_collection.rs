@@ -99,8 +99,6 @@ impl<'a> CassCollection<'a> {
             _=> Err(CassError::new(cl_result))
         }
     }
-
-
 }
 
 #[unsafe_destructor]

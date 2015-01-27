@@ -21,6 +21,10 @@ name = "batch"
 path = "src/bin/batch.rs"
 
 [[bin]]
+name = "collections"
+path = "src/bin/collections.rs"
+
+[[bin]]
 name = "map"
 path = "src/bin/map.rs"
 

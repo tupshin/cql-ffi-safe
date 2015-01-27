@@ -5,9 +5,9 @@ extern crate cql_ffi;
 
 use cql_ffi_safe::*;
 
-struct Pair {
-    key:String,
-    value:String
+struct Pair<'a> {
+    key:&'a str,
+    value:&'a str
 }
 
 static INSERT_QUERY_CMD: &'static str = "INSERT INTO examples.pairs (key, value) VALUES (?, ?)";
@@ -45,7 +45,7 @@ fn main() {
     match CassCluster::new().set_contact_points(CONTACT_POINTS) {
         Ok(cluster) => {
             let mut session = CassSession::new();
-            let pairs = vec!(Pair{key:"a".to_string(), value:"1".to_string()}, Pair{key:"b".to_string(), value:"2".to_string()});
+            let pairs = vec!(Pair{key:"a", value:"1"}, Pair{key:"b", value:"2"});
             session.connect(cluster).wait();
             session.execute(CassStatement::new(CREATE_KEYSPACE_CMD,0));
             session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
