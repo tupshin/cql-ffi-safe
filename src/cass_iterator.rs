@@ -65,7 +65,7 @@ impl<'a> CassIterator<'a> {
 
 //~ #[old_impl_check]
 //~ impl<'a, Self> Iterator for CassIterator<'a> {
-    //~ type Item = CassRow<'a>;
+    //~ type Item = CassRow;
 
     //~ pub fn next(&mut self) -> Option<<Self as Iterator>::Item> {unsafe{
         //~ match cql_ffi::cass_iterator_next(self.iterator) > 0 {

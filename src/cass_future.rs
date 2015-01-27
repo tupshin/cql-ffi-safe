@@ -9,7 +9,6 @@ use cass_result::CassResult;
 use cass_prepared::CassPrepared;
 use cass_string::CassString;
 
-#[derive(Show)]
 pub struct CassFuture<'a> {
     pub future:&'a mut cql_ffi::CassFuture
 }

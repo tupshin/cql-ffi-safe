@@ -1,10 +1,11 @@
 #![feature(unsafe_destructor)]
 #![allow(unstable)]
-#![allow(unsafe_destructor)]
 extern crate cql_ffi;
 extern crate uuid;
 extern crate libc;
 
+///A Rust create that provides (theoretically) safe bindings to the unsafe cql-ffi crate,
+///which in turns wrap the DataStax C++ driver
 
 pub use cass_bytes::*;
 pub use cass_types::*;

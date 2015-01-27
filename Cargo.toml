@@ -9,19 +9,24 @@ version = "0.0.3"
 authors = ["Tupshin Harper <tupshin@tupshin.com>"]
 
 [[bin]]
+name = "async"
+path = "src/bin/async.rs"
+
+[[bin]]
 name = "basic"
 path = "src/bin/basic.rs"
 
 [[bin]]
-name = "async"
-path = "src/bin/async.rs"
+name = "map"
+path = "src/bin/map.rs"
 
 [lib]
 name = "cql_ffi_safe"
 path = "src/lib.rs"
 
 [dependencies.cql_ffi]
-cql_ffi = "0.0.5"
+git = "https://github.com/tupshin/cql-ffi"
+# cql_ffi = "0.0.5"
 
 [dependencies.uuid]
 uuid = "0.1.7"

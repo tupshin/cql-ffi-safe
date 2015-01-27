@@ -23,6 +23,10 @@ impl<'a> CassColumn<'a> {
         cql_ffi::cass_value_type(self.column)
     }}
 
+    pub fn map_iter(&self) -> CassIterator {unsafe{
+        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_map(self.column)}
+    }}
+
     pub fn collection_iter(&self) -> CassIterator<'a> {unsafe{
         CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_collection(&*self.column)}
     }}
@@ -84,14 +88,15 @@ impl<'a> CassColumn<'a> {
     }}
 
     //FIXME this should emit a uuid::Uuid instead of a CassUuid
-    pub fn get_inet(&self) -> Result<CassInet, CassError> {unsafe{
+    pub fn get_inet(&self) -> Result<CassInet, CassError> {
         match self.get_inet() {
             Ok(inet) => Ok(inet),
             Err(err) => Err(err)
         }
-    }}
+    }
 
     pub fn get_string(&self) -> Result<CassString, CassError> {unsafe{
+        assert!(self.get_type() == CassValueType::BOOLEAN);
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_string(self.column,output) {
             cql_ffi::CassError::CASS_OK => Ok(CassString{string:*output}),

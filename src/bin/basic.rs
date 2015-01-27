@@ -3,7 +3,6 @@
 extern crate cql_ffi_safe;
 extern crate cql_ffi;
 
-
 use cql_ffi_safe::*;
 use cql_ffi::cass_result_free;
 
@@ -29,16 +28,17 @@ fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError>
 }
 
 fn insert_into_basic(session:&mut CassSession, key:&str, basic:Basic) -> Result<(),CassError> {
+    use cql_ffi_safe::CassBindable::*;
     let query=INSERT_QUERY_CMD;
-    let mut statement = CassStatement::new(query, 6);
+    let mut statement = CassStatement::new(query, 7);
     //FIXME with a macro that automatically does this for an arbitrary struct
     try!(statement.bind_all(vec!(
-        CassBindable::STR(key.to_string()),
-        CassBindable::BOOL(basic.bln),
-        CassBindable::F32(basic.flt),
-        CassBindable::F64(basic.dbl),
-        CassBindable::I32(basic.i32),
-        CassBindable::I64(basic.i64)
+        STR(key.to_string()),
+        BOOL(basic.bln),
+        F32(basic.flt),
+        F64(basic.dbl),
+        I32(basic.i32),
+        I64(basic.i64)
     )));
     session.execute(statement).wait();
     Ok(())
@@ -80,20 +80,15 @@ fn main() {
             session.connect(cluster).wait();
             session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
             match execute_query(&mut session, CREATE_TABLE_CMD) {
-                Err(err) => panic!("err: {:?}", err),
                 Ok(_) => {}
+                Err(err) => panic!("err: {:?}", err),
             }
             match insert_into_basic(&mut session,"test", input) {
-                Ok(response) => {
-                    println!("response {:?}",response);
-                }
+                Ok(response) => println!("response {:?}",response),
                 Err(err) => {println!("{:?}",err)}
             }
             match select_from_basic(&mut session,"test") {
-                Ok(output) => {
-                    println!("{:?}\n{:?}",input,output);
-                    assert!(input == output);
-                    }
+                Ok(output) => assert!(input == output),
                 Err(err) => panic!(err)
             }
             session.close().wait();

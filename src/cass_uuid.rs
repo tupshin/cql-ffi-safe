@@ -6,7 +6,7 @@ use std::ffi;
 use std::str::FromStr;
 use std::string::ToString;
 
-#[derive(Copy)]
+#[derive(Copy,Debug)]
 pub struct CassUuid {
     pub uuid:cql_ffi::CassUuid
 }

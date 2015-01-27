@@ -8,21 +8,12 @@ use cass_uuid::CassUuid;
 use cass_inet::CassInet;
 use cass_decimal::CassDecimal;
 use cass_collection::CassCollection;
+use cass_value::CassBindable;
 
 use cql_ffi::CassConsistency;
 use cql_ffi::CassError::CASS_OK;
 
 use std::str::FromStr;
-
-pub enum CassBindable{
-    BOOL(bool),
-    I32(i32),
-    I64(i64),
-    F32(f32),
-    F64(f64),
-    STR(String),
-}
-
 
 pub struct CassStatement<'a> {
     pub statement:&'a mut cql_ffi::CassStatement
@@ -87,6 +78,8 @@ impl<'a> CassStatement<'a> {
                 &CassBindable::I64(val) => try!(self.bind_i64(idx,val)),
                 &CassBindable::F32(val) => try!(self.bind_f32(idx,val)),
                 &CassBindable::F64(val) => try!(self.bind_f64(idx,val)),
+                &CassBindable::BLOB(ref val) => try!(self.bind_bytes(idx,val)),
+                &CassBindable::UUID(_) => return Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
                 &CassBindable::STR(ref val) => try!(self.bind_string(idx,val.as_slice())),
             };
             idx += 1;
@@ -144,8 +137,8 @@ impl<'a> CassStatement<'a> {
         }
     }}
 
-    pub fn bind_bytes(&mut self, index: u64, value:&[u8]) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_bytes(self.statement, index, CassBytes::new(value).bytes) {
+    pub fn bind_bytes(&mut self, index: u64, value:&Vec<u8>) -> Result<(),CassError> {unsafe{
+        match cql_ffi::cass_statement_bind_bytes(self.statement, index, CassBytes::new(value.as_slice()).bytes) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }
