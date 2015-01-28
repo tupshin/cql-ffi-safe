@@ -1,7 +1,12 @@
 #![allow(unstable)]
 extern crate cql_ffi_safe;
 
-use cql_ffi_safe::*;
+use cql_ffi_safe::CassStatement;
+use cql_ffi_safe::CassSession;
+use cql_ffi_safe::CassError;
+use cql_ffi_safe::CassCluster;
+use cql_ffi_safe::CassCollection;
+use cql_ffi_safe::CassCollectionType;
 
 static CREATE_KEYSPACE_CMD:&'static str = "CREATE KEYSPACE IF NOT EXISTS examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '3' };";
 static CREATE_TABLE_CMD:&'static str = "CREATE TABLE examples.collections (key text, items set<text>, PRIMARY KEY (key))";

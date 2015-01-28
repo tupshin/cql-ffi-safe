@@ -2,8 +2,8 @@ extern crate cql_ffi;
 
 use cql_ffi::CassError::CASS_OK;
 
-use string::CassString;
-use error::CassError;
+use cql_ffi_safe::string::CassString;
+use cql_ffi_safe::error::CassError;
 
 pub struct CassSsl<'a> {
     pub ssl:&'a mut cql_ffi::CassSsl

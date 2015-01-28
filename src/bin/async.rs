@@ -2,7 +2,12 @@
 
 extern crate cql_ffi_safe;
 
-use cql_ffi_safe::*;
+use cql_ffi_safe::CassBindable;
+use cql_ffi_safe::CassSession;
+use cql_ffi_safe::CassError;
+use cql_ffi_safe::CassStatement;
+use cql_ffi_safe::CassFuture;
+use cql_ffi_safe::CassCluster;
 
 use std::num::ToPrimitive;
 

@@ -1,12 +1,12 @@
 extern crate cql_ffi;
 
-use future::CassFuture;
-use cluster::CassCluster;
-use statement::CassStatement;
-use batch::CassBatch;
-use string::CassString;
-use error::CassError;
-use prepared::CassPrepared;
+use cql_ffi_safe::future::CassFuture;
+use cql_ffi_safe::cluster::CassCluster;
+use cql_ffi_safe::statement::CassStatement;
+use cql_ffi_safe::batch::CassBatch;
+use cql_ffi_safe::string::CassString;
+use cql_ffi_safe::error::CassError;
+use cql_ffi_safe::prepared::CassPrepared;
 
 use std::str::FromStr;
 

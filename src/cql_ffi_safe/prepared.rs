@@ -1,6 +1,6 @@
 extern crate cql_ffi;
 
-use statement::CassStatement;
+use cql_ffi_safe::statement::CassStatement;
 
 pub struct CassPrepared<'a> {
     pub prepared:&'a cql_ffi::CassPrepared

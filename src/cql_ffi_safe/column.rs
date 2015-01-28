@@ -1,12 +1,12 @@
 extern crate cql_ffi;
 
-use error::CassError;
-use cass_uuid::CassUuid;
-use value::CassValueType;
-use string::CassString;
-use bytes::CassBytes;
-use decimal::CassDecimal;
-use iterator::CassIterator;
+use cql_ffi_safe::error::CassError;
+use cql_ffi_safe::uuid::CassUuid;
+use cql_ffi_safe::value::CassValueType;
+use cql_ffi_safe::string::CassString;
+use cql_ffi_safe::bytes::CassBytes;
+use cql_ffi_safe::decimal::CassDecimal;
+use cql_ffi_safe::iterator::CassIterator;
 
 use std::mem;
 

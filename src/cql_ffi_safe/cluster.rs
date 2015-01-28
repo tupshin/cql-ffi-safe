@@ -1,12 +1,15 @@
 extern crate cql_ffi;
 extern crate libc;
 
-use libc::types::os::arch::c95::c_char;
-use error::CassError;
-use ssl::CassSsl;
-use std::ffi::CString;
+
+use cql_ffi_safe::error::CassError;
+use cql_ffi_safe::ssl::CassSsl;
 
 use cql_ffi::CassError::CASS_OK;
+
+use std::ffi::CString;
+use libc::types::os::arch::c95::c_char;
+
 
 pub struct CassCluster<'a> {
     pub cluster:&'a mut cql_ffi::CassCluster

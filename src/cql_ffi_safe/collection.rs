@@ -1,11 +1,11 @@
 extern crate cql_ffi;
 
 pub use cql_ffi::CassCollectionType;
-use error::CassError;
-use bytes::CassBytes;
-use cass_uuid::CassUuid;
-use inet::CassInet;
-use decimal::CassDecimal;
+use cql_ffi_safe::error::CassError;
+use cql_ffi_safe::bytes::CassBytes;
+use cql_ffi_safe::uuid::CassUuid;
+use cql_ffi_safe::inet::CassInet;
+use cql_ffi_safe::decimal::CassDecimal;
 
 pub struct CassCollection<'a> {
     pub collection:&'a mut cql_ffi::CassCollection

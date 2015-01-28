@@ -1,7 +1,12 @@
 #![allow(unstable)]
 extern crate cql_ffi_safe;
 
-use cql_ffi_safe::*;
+use cql_ffi_safe::CassStatement;
+use cql_ffi_safe::CassSession;
+use cql_ffi_safe::CassError;
+use cql_ffi_safe::CassCollection;
+use cql_ffi_safe::CassCluster;
+use cql_ffi_safe::CassCollectionType;
 
 struct Pair<'a> {
     key:&'a str,

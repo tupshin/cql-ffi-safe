@@ -3,11 +3,11 @@ extern crate uuid;
 
 pub use cql_ffi::CassValueType;
  
-use error::CassError;
-use decimal::CassDecimal;
-use bytes::CassBytes;
-use string::CassString;
-use cass_uuid::CassUuid;
+use cql_ffi_safe::error::CassError;
+use cql_ffi_safe::decimal::CassDecimal;
+use cql_ffi_safe::bytes::CassBytes;
+use cql_ffi_safe::string::CassString;
+use cql_ffi_safe::uuid::CassUuid;
 
 use std::mem;
 
