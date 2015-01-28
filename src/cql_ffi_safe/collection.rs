@@ -6,6 +6,7 @@ use cql_ffi_safe::bytes::CassBytes;
 use cql_ffi_safe::uuid::CassUuid;
 use cql_ffi_safe::inet::CassInet;
 use cql_ffi_safe::decimal::CassDecimal;
+use cql_ffi_safe::value::CassBindable;
 
 pub struct CassCollection<'a> {
     pub collection:&'a mut cql_ffi::CassCollection
@@ -19,6 +20,17 @@ impl<'a> CassCollection<'a> {
             false => Some(CassCollection{collection:&mut*collection})
         }
     }}
+
+    pub fn append(&self, value: CassBindable) -> Result<(),CassError> {
+        match value {
+            CassBindable::I32(val) => self.append_int32(val),
+            CassBindable::I64(val) => self.append_int64(val),
+            CassBindable::F32(val) => self.append_float(val),
+            CassBindable::F64(val) => self.append_double(val),
+            CassBindable::STR(val) => self.append_string(val.as_slice()),
+            val => panic!("unsupported type: {:?}",val)
+        }
+    }
 
     pub fn append_int32(&self, value: i32) -> Result<(),CassError> {
         let cl_result = unsafe{cql_ffi::cass_collection_append_int32(self.collection, value)};
