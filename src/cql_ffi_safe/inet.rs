@@ -1,8 +1,6 @@
 extern crate cql_ffi;
 
-use std::io::net::ip::IpAddr;
-use std::io::net::ip::Ipv4Addr;
-use std::io::net::ip::Ipv6Addr;
+use std::old_io::net::ip::{IpAddr,Ipv4Addr,Ipv6Addr};
 
 #[derive(Copy)]
 pub struct CassInet {

@@ -2,7 +2,6 @@
 
 extern crate cql_ffi_safe;
 
-use cql_ffi_safe::CassBindable;
 use cql_ffi_safe::CassSession;
 use cql_ffi_safe::CassError;
 use cql_ffi_safe::CassStatement;
