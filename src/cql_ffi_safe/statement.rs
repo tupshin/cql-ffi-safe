@@ -15,6 +15,7 @@ use cql_ffi::CassError::CASS_OK;
 
 use std::str::FromStr;
 
+#[derive(Debug)]
 pub struct CassStatement<'a> {
     pub statement:&'a mut cql_ffi::CassStatement
 }

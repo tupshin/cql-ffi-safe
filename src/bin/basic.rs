@@ -1,4 +1,4 @@
-#![allow(unstable)]
+#![feature(core,collections)]
 
 extern crate cql_ffi_safe;
 extern crate cql_ffi;
@@ -6,7 +6,7 @@ extern crate cql_ffi;
 use cql_ffi_safe::*;
 use cql_ffi::cass_result_free;
 
-#[derive(Show,Copy,PartialEq)]
+#[derive(Debug,Copy,PartialEq)]
 struct Basic {
     bln:bool,
     flt:f32,

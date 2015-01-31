@@ -4,7 +4,7 @@ use std::str::FromStr;
 use std::string::ToString;
 use std::slice;
 
-#[derive(Copy,Show)]
+#[derive(Copy,Debug)]
 pub struct CassString {
     pub string:cql_ffi::CassString
 }

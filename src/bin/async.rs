@@ -1,5 +1,4 @@
-#![allow(unstable)]
-
+#![feature(core,collections)]
 extern crate cql_ffi_safe;
 
 use cql_ffi_safe::CassSession;
