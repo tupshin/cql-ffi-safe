@@ -48,10 +48,12 @@ impl<'a> CassSession<'a> {
     }}
 
     pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared<'a>,CassError> {
-        let future:CassFuture = self.prepare(query.to_string());
+        let future = self.prepare(query.to_string());
         future.wait();
-        let prepared = future.get_prepared();
-        Ok(prepared)
+        match future.error_code() {
+            Ok(_) => Ok(future.get_prepared()),
+            err => panic!("{:?}",err)
+        }
     }
 
 

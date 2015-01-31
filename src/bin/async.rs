@@ -17,7 +17,7 @@ static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.asyn
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query.clone(),0);
-    let future = session.execute(statement);
+    let ref future = session.execute(statement);
     future.wait();
     match future.error_code() {
         Ok(_) => {Ok(())},
