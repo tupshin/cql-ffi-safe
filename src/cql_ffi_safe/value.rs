@@ -167,7 +167,7 @@ impl<'a> CassValue<'a> {
     pub fn get_bytes(&self) -> Result<Vec<u8>, CassError> {unsafe{
         assert!(self.get_type() == CassValueType::BLOB);
         let mut output:cql_ffi::CassBytes =  mem::zeroed();
-        let mut bytes = CassBytes{bytes:output};
+        let mut bytes = CassBytes(output);
         match cql_ffi::cass_value_get_bytes(self.value,&mut output) {
             cql_ffi::CassError::CASS_OK => Ok(bytes.as_bytes()),
             err => Err(CassError{error:err})

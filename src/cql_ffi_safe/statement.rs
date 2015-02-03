@@ -139,7 +139,7 @@ impl<'a> CassStatement<'a> {
     }}
 
     pub fn bind_bytes(&mut self, index: u64, value:&Vec<u8>) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_bytes(self.statement, index, CassBytes::new(value.as_slice()).bytes) {
+        match cql_ffi::cass_statement_bind_bytes(self.statement, index, CassBytes::new(value.as_slice()).0) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }
@@ -228,7 +228,7 @@ impl<'a> CassStatement<'a> {
     }}
 
     pub fn bind_bytes_by_name(&mut self, name: &str, value:&[u8]) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_bytes_by_name(self.statement, name.as_ptr() as *const i8, CassBytes::new(value).bytes) {
+        match cql_ffi::cass_statement_bind_bytes_by_name(self.statement, name.as_ptr() as *const i8, CassBytes::new(value).0) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }

@@ -81,7 +81,7 @@ impl<'a> CassCollection<'a> {
     }
 
     pub fn append_bytes(&self, value: CassBytes) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_collection_append_bytes(self.collection, value.bytes)};
+        let cl_result = unsafe{cql_ffi::cass_collection_append_bytes(self.collection, value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))

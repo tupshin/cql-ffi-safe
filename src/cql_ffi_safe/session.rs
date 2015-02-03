@@ -30,8 +30,8 @@ impl<'a> CassSession<'a> {
         CassFuture{future:&mut*cql_ffi::cass_session_close(&mut*self.session)}
     }}
 
-    pub fn connect(&mut self, cluster:&CassCluster) -> CassFuture<'static> {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, cluster.cluster)}
+    pub fn connect(&mut self, cluster:&mut CassCluster) -> CassFuture<'static> {unsafe{
+        CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, &mut cluster.0)}
     }}
 
     pub fn prepare(&mut self, query:String) -> CassFuture<'static> {unsafe{
@@ -64,6 +64,6 @@ impl<'a> CassSession<'a> {
     //~ }}
 
     pub fn connect_keyspace(&mut self, cluster:CassCluster, keyspace: &str) -> CassFuture {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_connect_keyspace(&mut*self.session, cluster.cluster, keyspace.as_ptr() as *const i8)}
+        CassFuture{future:&mut*cql_ffi::cass_session_connect_keyspace(&mut*self.session, &cluster.0, keyspace.as_ptr() as *const i8)}
     }}
 }

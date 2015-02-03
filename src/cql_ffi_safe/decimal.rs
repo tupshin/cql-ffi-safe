@@ -17,7 +17,7 @@ impl Default for CassDecimal {
 impl CassDecimal {
     //FIXME there needs to be a rust-friendlier way to create these
     pub fn init(scale: i32, varint: CassBytes) -> CassDecimal {unsafe{
-        CassDecimal{decimal:cql_ffi::cass_decimal_init(scale,varint.bytes)}
+        CassDecimal{decimal:cql_ffi::cass_decimal_init(scale,varint.0)}
     }}
 }
 

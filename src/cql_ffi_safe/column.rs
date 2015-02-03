@@ -106,7 +106,7 @@ impl<'a> CassColumn<'a> {
     pub fn get_bytes(&self) -> Result<CassBytes, CassError> {unsafe{
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_bytes(self.column,output) {
-            cql_ffi::CassError::CASS_OK => Ok(CassBytes{bytes:*output}),
+            cql_ffi::CassError::CASS_OK => Ok(CassBytes(*output)),
             err => Err(CassError{error:err})
         }
     }}
