@@ -94,7 +94,7 @@ impl<'a> CassValue<'a> {
         let ref mut output = 0i32;
         match cql_ffi::cass_value_get_int32(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -103,7 +103,7 @@ impl<'a> CassValue<'a> {
         let ref mut output = 0i64;
         match cql_ffi::cass_value_get_int64(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -112,7 +112,7 @@ impl<'a> CassValue<'a> {
         let ref mut output = 0f32;
         match cql_ffi::cass_value_get_float(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -121,7 +121,7 @@ impl<'a> CassValue<'a> {
         let ref mut output = 0f64;
         match cql_ffi::cass_value_get_double(self.value,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -130,7 +130,7 @@ impl<'a> CassValue<'a> {
         let ref mut b_bln = 0u32;
         match cql_ffi::cass_value_get_bool(self.value,b_bln) {
             cql_ffi::CassError::CASS_OK => Ok(true),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -142,7 +142,7 @@ impl<'a> CassValue<'a> {
             cql_ffi::CassError::CASS_OK => {
                 Ok(CassUuid{uuid:*output})
             },
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -160,7 +160,7 @@ impl<'a> CassValue<'a> {
         let mut output =  mem::zeroed::<cql_ffi::CassString>();
         match cql_ffi::cass_value_get_string(self.value,&mut output) {
             cql_ffi::CassError::CASS_OK => Ok(CassString{string:output}),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -170,7 +170,7 @@ impl<'a> CassValue<'a> {
         let mut bytes = CassBytes(output);
         match cql_ffi::cass_value_get_bytes(self.value,&mut output) {
             cql_ffi::CassError::CASS_OK => Ok(bytes.as_bytes()),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -178,8 +178,8 @@ impl<'a> CassValue<'a> {
         assert!(self.get_type() == CassValueType::DECIMAL);
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_decimal(self.value,output) {
-            cql_ffi::CassError::CASS_OK => Ok(CassDecimal{decimal:*output}),
-            err => Err(CassError{error:err})
+            cql_ffi::CassError::CASS_OK => Ok(CassDecimal(*output)),
+            err => Err(CassError(err))
         }
     }}    
     

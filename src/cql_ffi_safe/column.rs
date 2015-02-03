@@ -34,7 +34,7 @@ impl CassColumn {
         let ref mut output = 0i32;
         match cql_ffi::cass_value_get_int32(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -43,7 +43,7 @@ impl CassColumn {
         let ref mut output = 0i64;
         match cql_ffi::cass_value_get_int64(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -52,7 +52,7 @@ impl CassColumn {
         let ref mut output = 0f32;
         match cql_ffi::cass_value_get_float(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -61,7 +61,7 @@ impl CassColumn {
         let ref mut output = 0f64;
         match cql_ffi::cass_value_get_double(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(*output),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -70,7 +70,7 @@ impl CassColumn {
         let ref mut b_bln = 0u32;
         match cql_ffi::cass_value_get_bool(&self.0,b_bln) {
             cql_ffi::CassError::CASS_OK => Ok(true),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -81,7 +81,7 @@ impl CassColumn {
             cql_ffi::CassError::CASS_OK => {
                 Ok(CassUuid{uuid:*output})
             },
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -98,7 +98,7 @@ impl CassColumn {
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_string(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(CassString{string:*output}),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
@@ -106,15 +106,15 @@ impl CassColumn {
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_bytes(&self.0,output) {
             cql_ffi::CassError::CASS_OK => Ok(CassBytes(*output)),
-            err => Err(CassError{error:err})
+            err => Err(CassError(err))
         }
     }}
 
     pub fn get_decimal(&self) -> Result<CassDecimal, CassError> {unsafe{
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_decimal(&self.0,output) {
-            cql_ffi::CassError::CASS_OK => Ok(CassDecimal{decimal:*output}),
-            err => Err(CassError{error:err})
+            cql_ffi::CassError::CASS_OK => Ok(CassDecimal(*output)),
+            err => Err(CassError(err))
         }
     }}    
 

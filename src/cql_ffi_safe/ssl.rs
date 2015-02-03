@@ -25,7 +25,7 @@ impl<'a> CassSsl<'a> {
     pub fn add_trusted_cert(&mut self, cert: CassString) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_add_trusted_cert(self.ssl, cert.string) {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }}
 
@@ -36,7 +36,7 @@ impl<'a> CassSsl<'a> {
     pub fn set_cert(&mut self, cert: CassString) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_set_cert(self.ssl, cert.string) {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }}
 
@@ -44,7 +44,7 @@ impl<'a> CassSsl<'a> {
     pub fn set_private_key(&mut self, key: CassString, password: &str) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_set_private_key(self.ssl, key.string, password.as_ptr() as *const i8) {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }}
 }

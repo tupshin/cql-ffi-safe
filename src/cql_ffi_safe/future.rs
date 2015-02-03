@@ -52,7 +52,7 @@ impl<'a> CassFuture<'a> {
         let rc = cql_ffi::cass_future_error_code(self.future);
         match rc {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _ => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }}
 

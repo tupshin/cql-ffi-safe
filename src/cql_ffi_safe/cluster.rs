@@ -22,14 +22,14 @@ impl CassCluster {
         println!("contact points: {:?}",contact_points);
         match unsafe{cql_ffi::cass_cluster_set_contact_points(&mut self.0, CString::from_slice(contact_points.as_bytes()).as_ptr() as *const c_char)} {
             CASS_OK => Ok(self),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_port(&mut self, port: i32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_port(&mut self.0, port)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
@@ -40,49 +40,49 @@ impl CassCluster {
     pub fn set_protocol_version(&mut self, protocol_version: i32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_protocol_version(&mut self.0, protocol_version)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_num_threads_io(&mut self, num_threads: i32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_protocol_version(&mut self.0, num_threads)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
     
     pub fn set_queue_size_io(&mut self, queue_size: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_queue_size_io(&mut self.0, queue_size)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_queue_size_event(&mut self, queue_size: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_queue_size_event(&mut self.0, queue_size)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_queue_size_log(&mut self, queue_size: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_queue_size_log(&mut self.0, queue_size)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }    
 
     pub fn set_core_connections_per_host(&mut self, num_connections: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_core_connections_per_host(&mut self.0, num_connections)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }    
 
     pub fn set_max_connections_per_host(&mut self, num_connections: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_max_connections_per_host(&mut self.0, num_connections)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
@@ -93,49 +93,49 @@ impl CassCluster {
     pub fn set_max_concurrent_creation(&mut self, num_connections: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_max_concurrent_creation(&mut self.0, num_connections)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_max_concurrent_requests_threshold(&mut self, num_requests: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_max_concurrent_requests_threshold(&mut self.0, num_requests)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_max_requests_per_flush(&mut self, num_requests: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_max_requests_per_flush(&mut self.0, num_requests)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }        
 
     pub fn set_write_bytes_high_water_mark(&mut self, num_bytes: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_write_bytes_high_water_mark(&mut self.0, num_bytes)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     } 
 
     pub fn set_write_bytes_low_water_mark(&mut self, num_bytes: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_write_bytes_low_water_mark(&mut self.0, num_bytes)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     } 
 
     pub fn set_pending_requests_high_water_mark(&mut self, num_requests: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_pending_requests_high_water_mark(&mut self.0, num_requests)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
     pub fn set_pending_requests_low_water_mark(&mut self, num_requests: u32) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_pending_requests_low_water_mark(&mut self.0, num_requests)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 
@@ -154,7 +154,7 @@ impl CassCluster {
    pub fn set_load_balance_round_robin(&mut self) -> Result<(),CassError> {
         match unsafe{cql_ffi::cass_cluster_set_load_balance_round_robin(&mut self.0)} {
             CASS_OK => Ok(()),
-            rc => Err(CassError{error:rc})
+            err => Err(CassError(err))
         }
     }
 

@@ -103,7 +103,7 @@ impl CassCollection {
     }
 
     pub fn append_decimal(&mut self, value: CassDecimal) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_collection_append_decimal(&mut self.0, value.decimal)};
+        let cl_result = unsafe{cql_ffi::cass_collection_append_decimal(&mut self.0, value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))
