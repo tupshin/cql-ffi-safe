@@ -19,8 +19,9 @@ impl ToString for CassString {
 }
 
 impl FromStr for CassString {
-    fn from_str(string:&str) -> Option<Self> {unsafe{
+    type Err = String;
+    fn from_str(string:&str) -> Result<Self, String> {unsafe{
         let cass_str = cql_ffi::cass_string_init2(string.as_ptr() as *const i8,string.len() as u64);
-        Some(CassString{string:cass_str})
+        Ok(CassString{string:cass_str})
     }}
 }

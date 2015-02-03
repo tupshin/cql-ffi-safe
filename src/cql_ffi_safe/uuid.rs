@@ -5,6 +5,7 @@ use std::mem;
 use std::ffi;
 use std::str::FromStr;
 use std::string::ToString;
+use cql_ffi_safe::error::CassError;
 
 #[derive(Copy,Debug)]
 pub struct CassUuid {
@@ -88,11 +89,12 @@ impl ToString for CassUuid {
 }
 
 impl FromStr for CassUuid {
-    fn from_str(string:&str) -> Option<Self> {unsafe{
+    type Err = String;
+    fn from_str(string:&str) -> Result<Self, String> {unsafe{
         let output =  mem::zeroed();
         match cql_ffi::cass_uuid_from_string(string.as_ptr() as *const i8,output) {
-            cql_ffi::CassError::CASS_OK => Some(CassUuid{uuid:*output}),
-            _=> None
+            cql_ffi::CassError::CASS_OK => Ok(CassUuid{uuid:*output}),
+            e => Err(CassError::new(e).desc())
         }
     }}
 }
