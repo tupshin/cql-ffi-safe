@@ -6,64 +6,58 @@ use cql_ffi_safe::iterator::CassIterator;
 
 pub use cql_ffi::CassSchemaMetaType;
 
-pub struct CassSchemaMetaField<'a> {
-    pub meta_field:&'a cql_ffi::CassSchemaMetaField
-}
+pub struct CassSchemaMetaField(pub cql_ffi::CassSchemaMetaField);
 
-impl<'a> CassSchemaMetaField<'a> {
+impl CassSchemaMetaField {
     pub fn meta_field_name(&self) -> CassString {unsafe{
-        CassString{string:cql_ffi::cass_schema_meta_field_name(self.meta_field)}
+        CassString(cql_ffi::cass_schema_meta_field_name(&self.0))
     }}
 
     pub fn meta_field_value(field: CassSchemaMetaField) -> CassValue {unsafe{
-        CassValue{value:&*cql_ffi::cass_schema_meta_field_value(field.meta_field)}
+        CassValue(*cql_ffi::cass_schema_meta_field_value(&field.0))
     }}
 }
 
-pub struct CassSchema<'a> {
-    pub schema:&'a mut cql_ffi::CassSchema
-}
+pub struct CassSchema(pub cql_ffi::CassSchema);
 
-pub struct CassSchemaMeta<'a> {
-    pub schema_meta:&'a cql_ffi::CassSchemaMeta
-}
+pub struct CassSchemaMeta(pub cql_ffi::CassSchemaMeta);
 
-impl<'a> CassSchemaMeta<'a> {
+impl CassSchemaMeta {
     pub fn meta_type(&self) -> CassSchemaMetaType {unsafe{
-        cql_ffi::cass_schema_meta_type(self.schema_meta)
+        cql_ffi::cass_schema_meta_type(&self.0)
     }}
 
     pub fn get_entry(&self, name: &str) -> Self {unsafe{
-        CassSchemaMeta{schema_meta:&*cql_ffi::cass_schema_meta_get_entry(self.schema_meta, name.as_ptr() as *const i8)}
+        CassSchemaMeta(*cql_ffi::cass_schema_meta_get_entry(&self.0, name.as_ptr() as *const i8))
     }}
 
     pub fn get_field(&self, name: &str) -> CassSchemaMetaField {unsafe{
-        CassSchemaMetaField{meta_field:&*cql_ffi::cass_schema_meta_get_field(self.schema_meta, name.as_ptr() as *const i8)}
+        CassSchemaMetaField(*cql_ffi::cass_schema_meta_get_field(&self.0, name.as_ptr() as *const i8))
     }}
 
     pub fn iter(&self) -> CassIterator {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_schema_meta(self.schema_meta)}
+        CassIterator(*cql_ffi::cass_iterator_from_schema_meta(&self.0))
     }}
 
     pub fn iter_fields(&self) -> CassIterator {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_fields_from_schema_meta(self.schema_meta)}
+        CassIterator(*cql_ffi::cass_iterator_fields_from_schema_meta(&self.0))
     }}
 }
 
 #[unsafe_destructor]
-impl<'a> Drop for CassSchema<'a> {
+impl Drop for CassSchema {
     fn drop(&mut self) {unsafe{
-        cql_ffi::cass_schema_free(self.schema)
+        cql_ffi::cass_schema_free(&mut self.0)
     }}
 }
 
-impl<'a> CassSchema<'a> {
-    pub fn get_keyspace(&self, keyspace_name: &str) -> CassSchemaMeta<'a> {unsafe{
-        CassSchemaMeta{schema_meta:&*cql_ffi::cass_schema_get_keyspace(self.schema, keyspace_name.as_ptr() as *const i8)}
+impl CassSchema {
+    pub fn get_keyspace(&self, keyspace_name: &str) -> CassSchemaMeta {unsafe{
+        CassSchemaMeta(*cql_ffi::cass_schema_get_keyspace(&self.0, keyspace_name.as_ptr() as *const i8))
     }}
 
     pub fn iter(&self) -> CassIterator {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_schema(self.schema)}
+        CassIterator(*cql_ffi::cass_iterator_from_schema(&self.0))
     }}
 
 }

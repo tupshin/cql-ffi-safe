@@ -3,16 +3,14 @@ extern crate cql_ffi;
 use std::old_io::net::ip::{IpAddr,Ipv4Addr,Ipv6Addr};
 
 #[derive(Copy)]
-pub struct CassInet {
-    pub inet:cql_ffi::CassInet
-}
+pub struct CassInet(pub cql_ffi::CassInet);
 
 pub fn init(addr:IpAddr) -> CassInet {unsafe{
     match addr {
         Ipv4Addr(oct1,oct2,oct3,oct4) => {
             let mut v:Vec<u8> = Vec::with_capacity(4);
             v.push(oct1);v.push(oct2);v.push(oct3);v.push(oct4);
-            CassInet{inet:cql_ffi::cass_inet_init_v4(v.as_ptr())}
+            CassInet(cql_ffi::cass_inet_init_v4(v.as_ptr()))
         },
         Ipv6Addr(seg1,seg2,seg3,seg4,seg5,seg6,seg7,seg8) => {
             let mut v:Vec<u16> = Vec::with_capacity(8);

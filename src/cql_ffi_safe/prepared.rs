@@ -2,20 +2,18 @@ extern crate cql_ffi;
 
 use cql_ffi_safe::statement::CassStatement;
 
-pub struct CassPrepared<'a> {
-    pub prepared:&'a cql_ffi::CassPrepared
-}
+pub struct CassPrepared(pub cql_ffi::CassPrepared);
 
 #[unsafe_destructor]
-impl<'a> Drop for CassPrepared<'a> {
+impl Drop for CassPrepared {
     fn drop(&mut self) {unsafe{
-        cql_ffi::cass_prepared_free(self.prepared)
+        cql_ffi::cass_prepared_free(&mut self.0)
     }}
 }
 
-impl<'a> CassPrepared<'a> {
+impl CassPrepared {
     pub fn bind(&self) -> CassStatement {unsafe{
-        CassStatement{statement:&mut*cql_ffi::cass_prepared_bind(self.prepared)}
+        CassStatement(*cql_ffi::cass_prepared_bind(&self.0))
     }}
 }
 

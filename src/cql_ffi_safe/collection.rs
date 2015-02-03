@@ -87,7 +87,7 @@ impl CassCollection {
     }
 
     pub fn append_uuid(&mut self, value: CassUuid) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_collection_append_uuid(&mut self.0, value.uuid)};
+        let cl_result = unsafe{cql_ffi::cass_collection_append_uuid(&mut self.0, value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))
@@ -95,7 +95,7 @@ impl CassCollection {
     }
 
     pub fn append_inet(&mut self, value: CassInet) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_collection_append_inet(&mut self.0, value.inet)};
+        let cl_result = unsafe{cql_ffi::cass_collection_append_inet(&mut self.0, value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))
@@ -111,7 +111,6 @@ impl CassCollection {
     }
 }
 
-#[unsafe_destructor]
 impl Drop for CassCollection {
     fn drop(&mut self) {
         unsafe{cql_ffi::cass_collection_free(&mut self.0)}

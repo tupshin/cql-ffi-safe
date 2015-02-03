@@ -9,7 +9,7 @@ pub use cql_ffi::CassBatchType;
 pub struct CassBatch(pub cql_ffi::CassBatch);
 
 #[unsafe_destructor]
-impl<'a> Drop for CassBatch {
+impl Drop for CassBatch {
     fn drop(&mut self) {
         unsafe{cql_ffi::cass_batch_free(&mut self.0)}
     }
@@ -29,7 +29,7 @@ impl CassBatch {
     }
     
     pub fn add_statement(&mut self, statement: CassStatement) -> Result<(),CassError> {
-        let cl_result = unsafe{cql_ffi::cass_batch_add_statement(&mut self.0, statement.statement)};
+        let cl_result = unsafe{cql_ffi::cass_batch_add_statement(&mut self.0, &mut statement.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
             _=> Err(CassError::new(cl_result))

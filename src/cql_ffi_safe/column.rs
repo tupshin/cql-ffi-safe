@@ -22,11 +22,11 @@ impl CassColumn {
     }}
 
     pub fn map_iter(&self) -> CassIterator {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_map(&self.0)}
+        CassIterator(*cql_ffi::cass_iterator_from_map(&self.0))
     }}
 
     pub fn collection_iter(&self) -> CassIterator {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_collection(&self.0)}
+        CassIterator(*cql_ffi::cass_iterator_from_collection(&self.0))
     }}
 
     pub fn get_int32(&self) -> Result<i32, CassError> {unsafe{
@@ -79,7 +79,7 @@ impl CassColumn {
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_uuid(&self.0,output) {
             cql_ffi::CassError::CASS_OK => {
-                Ok(CassUuid{uuid:*output})
+                Ok(CassUuid(*output))
             },
             err => Err(CassError(err))
         }
@@ -97,7 +97,7 @@ impl CassColumn {
         assert!(self.get_type() == CassValueType::BOOLEAN);
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_string(&self.0,output) {
-            cql_ffi::CassError::CASS_OK => Ok(CassString{string:*output}),
+            cql_ffi::CassError::CASS_OK => Ok(CassString(*output)),
             err => Err(CassError(err))
         }
     }}

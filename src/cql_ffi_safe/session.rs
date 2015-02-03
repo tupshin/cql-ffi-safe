@@ -10,44 +10,41 @@ use cql_ffi_safe::prepared::CassPrepared;
 
 use std::str::FromStr;
 
-pub struct CassSession<'a> {
-    session:&'a mut cql_ffi::CassSession
-}
+pub struct CassSession(pub cql_ffi::CassSession);
 
-#[unsafe_destructor]
-impl<'a> Drop for CassSession<'a> {
+impl Drop for CassSession {
     fn drop(&mut self) {unsafe{
-        cql_ffi::cass_session_free(self.session)
+        cql_ffi::cass_session_free(&mut self.0)
     }}
 }
 
-impl<'a> CassSession<'a> {
-    pub fn new() -> CassSession<'static> {unsafe{
-        CassSession{session:&mut*cql_ffi::cass_session_new()}
+impl CassSession {
+    pub fn new() -> CassSession {unsafe{
+        CassSession(*cql_ffi::cass_session_new())
     }}
 
     pub fn close(&mut self) -> CassFuture {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_close(&mut*self.session)}
+        CassFuture(*cql_ffi::cass_session_close(&mut self.0))
     }}
 
-    pub fn connect(&mut self, cluster:&mut CassCluster) -> CassFuture<'static> {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_connect(&mut*self.session, &mut cluster.0)}
+    pub fn connect(&mut self, cluster:&mut CassCluster) -> CassFuture {unsafe{
+        CassFuture(*cql_ffi::cass_session_connect(&mut self.0, &mut cluster.0))
     }}
 
-    pub fn prepare(&mut self, query:String) -> CassFuture<'static> {unsafe{
+    pub fn prepare(&mut self, query:String) -> CassFuture {unsafe{
         let string:CassString = FromStr::from_str(query.as_slice()).unwrap();
-        CassFuture{future:&mut*cql_ffi::cass_session_prepare(&mut*self.session, string.string)}
+        CassFuture(*cql_ffi::cass_session_prepare(&mut self.0, string.0))
     }}
 
-    pub fn execute(&mut self, statement:CassStatement) -> CassFuture<'static> {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_execute(&mut*self.session, statement.statement)}
+    pub fn execute(&mut self, mut statement:CassStatement) -> CassFuture {unsafe{
+        CassFuture(*cql_ffi::cass_session_execute(&mut self.0, &mut statement.0))
     }}
 
-    pub fn execute_batch(&mut self, batch:CassBatch) -> CassFuture<'static> {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_execute_batch(&mut*self.session, &batch.0)}
+    pub fn execute_batch(&mut self, batch:CassBatch) -> CassFuture {unsafe{
+        CassFuture(*cql_ffi::cass_session_execute_batch(&mut self.0, &batch.0))
     }}
 
-    pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared<'a>,CassError> {
+    pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared,CassError> {
         let future = self.prepare(query.to_string());
         future.wait();
         match future.error_code() {
@@ -64,6 +61,6 @@ impl<'a> CassSession<'a> {
     //~ }}
 
     pub fn connect_keyspace(&mut self, cluster:CassCluster, keyspace: &str) -> CassFuture {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_connect_keyspace(&mut*self.session, &cluster.0, keyspace.as_ptr() as *const i8)}
+        CassFuture(*cql_ffi::cass_session_connect_keyspace(&mut self.0, &cluster.0, keyspace.as_ptr() as *const i8))
     }}
 }

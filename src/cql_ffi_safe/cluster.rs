@@ -33,8 +33,8 @@ impl CassCluster {
         }
     }
 
-    pub fn set_ssl(&mut self, ssl: CassSsl) {
-        unsafe{cql_ffi::cass_cluster_set_ssl(&mut self.0, ssl.ssl)};
+    pub fn set_ssl(&mut self, mut ssl: CassSsl) {
+        unsafe{cql_ffi::cass_cluster_set_ssl(&mut self.0, &mut ssl.0)};
     }
 
     pub fn set_protocol_version(&mut self, protocol_version: i32) -> Result<(),CassError> {

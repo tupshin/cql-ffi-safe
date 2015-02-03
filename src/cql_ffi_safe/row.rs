@@ -5,22 +5,18 @@ use cql_ffi_safe::iterator::CassIterator;
 use cql_ffi_safe::value::CassValue;
 use cql_ffi_safe::column::CassColumn;
 
-#[derive(Copy)]
-pub struct CassRow<'a> {
-    pub row:&'a cql_ffi::CassRow
-}
+pub struct CassRow(pub cql_ffi::CassRow);
 
-
-impl<'a> CassRow<'a> {
-    pub fn iter(self) -> CassIterator<'a> {unsafe{
-        CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_row(self.row)}
+impl CassRow {
+    pub fn iter(&self) -> CassIterator {unsafe{
+        CassIterator(*cql_ffi::cass_iterator_from_row(&self.0))
     }}
 
-    pub fn get_column(self, index: u64) -> CassColumn {unsafe{
-        CassColumn(*cql_ffi::cass_row_get_column(self.row, index))
+    pub fn get_column(&self, index: u64) -> CassColumn {unsafe{
+        CassColumn(*cql_ffi::cass_row_get_column(&self.0, index))
     }}
 
-    pub fn get_column_by_name(row: CassRow, name: &str) -> CassValue<'a> {unsafe{
-        CassValue{value:&*cql_ffi::cass_row_get_column_by_name(row.row, name.as_ptr() as *const i8)}
+    pub fn get_column_by_name(&self, name: &str) -> CassValue {unsafe{
+        CassValue(*cql_ffi::cass_row_get_column_by_name(&self.0, name.as_ptr() as *const i8))
     }}
 }
