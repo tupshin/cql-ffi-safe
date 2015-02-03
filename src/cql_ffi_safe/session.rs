@@ -44,7 +44,7 @@ impl<'a> CassSession<'a> {
     }}
 
     pub fn execute_batch(&mut self, batch:CassBatch) -> CassFuture<'static> {unsafe{
-        CassFuture{future:&mut*cql_ffi::cass_session_execute_batch(&mut*self.session, batch.batch)}
+        CassFuture{future:&mut*cql_ffi::cass_session_execute_batch(&mut*self.session, &batch.0)}
     }}
 
     pub fn prepare_insert_into_batch(&mut self, query:&str) -> Result<CassPrepared<'a>,CassError> {

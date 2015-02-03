@@ -22,7 +22,7 @@ static CREATE_TABLE_CMD: &'static str = "CREATE TABLE examples.pairs (key text, 
 static CONTACT_POINTS: &'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
 
 fn insert_into_batch_with_prepared<'a>(session:&mut CassSession, pairs:Vec<Pair>, prepared:CassPrepared<'a>)-> Result<CassPrepared<'a>,CassError> {
-    let batch = CassBatch::new(CassBatchType::LOGGED);
+    let mut batch = CassBatch::new(CassBatchType::LOGGED);
     for pair in pairs.iter() {
         let mut statement = prepared.bind();
         try!(statement.bind_string(0, pair.key.as_slice()));
