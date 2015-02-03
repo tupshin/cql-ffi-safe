@@ -177,8 +177,8 @@ impl<'a> CassStatement<'a> {
         //~ }
     //~ }}
     
-    pub fn bind_collection(&mut self, index: u64, collection:CassCollection) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_collection(self.statement, index, collection.collection) {
+    pub fn bind_collection(&mut self, index: u64, mut collection:CassCollection) -> Result<(),CassError> {unsafe{
+        match cql_ffi::cass_statement_bind_collection(self.statement, index, &mut collection.0) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }
@@ -267,8 +267,8 @@ impl<'a> CassStatement<'a> {
     //~ }}
 
     //FIXME should be able to pass in normal rust collections
-    pub fn bind_collection_by_name(&mut self, name: &str, collection:CassCollection) -> Result<(),CassError> {unsafe{
-        match cql_ffi::cass_statement_bind_collection_by_name(self.statement, name.as_ptr() as *const i8, collection.collection) {
+    pub fn bind_collection_by_name(&mut self, name: &str, mut collection:CassCollection) -> Result<(),CassError> {unsafe{
+        match cql_ffi::cass_statement_bind_collection_by_name(self.statement, name.as_ptr() as *const i8, &mut collection.0) {
             CASS_OK => Ok(()),
             rc => Err(CassError{error:rc})
         }

@@ -29,7 +29,7 @@ impl<'a> CassIterator<'a> {
     }}
 
     pub fn get_column(&mut self) -> CassColumn {unsafe{
-        CassColumn{column:&*cql_ffi::cass_iterator_get_column(self.iterator)}
+        CassColumn(*cql_ffi::cass_iterator_get_column(self.iterator))
     }}
     
     pub fn get_value(&mut self) -> CassValue {unsafe{

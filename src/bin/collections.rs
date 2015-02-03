@@ -16,7 +16,7 @@ static SELECT_QUERY_CMD:&'static str = "SELECT items FROM examples.collections W
 
 fn insert_into_collections(session:&mut CassSession, key:&str, items:Vec<String>) -> Result<(),CassError> {
     let mut statement = CassStatement::new(INSERT_QUERY_CMD, 2);    
-    let collection = CassCollection::new(CassCollectionType::SET, items.len() as u64).unwrap();
+    let mut collection = CassCollection::new(CassCollectionType::SET, items.len() as u64).unwrap();
     for item in items.iter() {
         try!(collection.append_string(item.as_slice()));
     }

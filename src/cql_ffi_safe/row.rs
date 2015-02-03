@@ -16,8 +16,8 @@ impl<'a> CassRow<'a> {
         CassIterator{iterator:&mut*cql_ffi::cass_iterator_from_row(self.row)}
     }}
 
-    pub fn get_column(self, index: u64) -> CassColumn<'a> {unsafe{
-        CassColumn{column:&*cql_ffi::cass_row_get_column(self.row, index)}
+    pub fn get_column(self, index: u64) -> CassColumn {unsafe{
+        CassColumn(*cql_ffi::cass_row_get_column(self.row, index))
     }}
 
     pub fn get_column_by_name(row: CassRow, name: &str) -> CassValue<'a> {unsafe{

@@ -19,7 +19,7 @@ static CONTACT_POINTS:&'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
 fn insert_into_maps(session:&mut CassSession, key:String, items:Vec<(String,i32)>) -> Result<(),CassError> {
     use cql_ffi_safe::CassBindable::*;
     let mut statement = CassStatement::new(INSERT_QUERY_CMD, 2);    
-    let collection = CassCollection::new(CassCollectionType::MAP, items.len() as u64).unwrap();
+    let mut collection = CassCollection::new(CassCollectionType::MAP, items.len() as u64).unwrap();
     for item in items.iter() {
         let item = item.clone();
         try!(collection.append(STR(item.0)));
