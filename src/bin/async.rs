@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 extern crate cql_ffi_safe;
 
 use cql_ffi_safe::CassSession;
@@ -43,7 +43,7 @@ fn insert_into_async(session: &mut CassSession, key:&str) -> Result<(),CassError
         let future = session.execute(statement);
         futures.push(future);
     }
-    for mut future in futures.iter_mut() {
+    for future in futures.iter_mut() {
         future.wait();
         try!( future.error_code());
     }

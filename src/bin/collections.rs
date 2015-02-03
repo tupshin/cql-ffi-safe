@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 
 extern crate cql_ffi_safe;
 
