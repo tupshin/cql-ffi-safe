@@ -9,7 +9,9 @@ use cql_ffi_safe::result::CassResult;
 use cql_ffi_safe::prepared::CassPrepared;
 use cql_ffi_safe::string::CassString;
 
-pub struct CassFuture(pub cql_ffi::CassFuture);
+use std::ptr;
+
+pub struct CassFuture(pub *mut cql_ffi::CassFuture);
 
 //~ impl Future for CassFuture {
 
@@ -26,35 +28,35 @@ impl CassFuture {
     //~ }
 
     pub fn ready(&mut self) -> bool {
-        if unsafe{cql_ffi::cass_future_ready(&mut self.0)} > 0 {true} else {false}
+        if unsafe{cql_ffi::cass_future_ready(self.0)} > 0 {true} else {false}
     }
 
     pub fn wait(&mut self) -> &Self {
-        unsafe{cql_ffi::cass_future_wait(&mut self.0)};
+        unsafe{cql_ffi::cass_future_wait(self.0)};
         self
     }
 
     pub fn wait_timed(&mut self, timeout_us: u64) -> bool {
-        if unsafe{cql_ffi::cass_future_wait_timed(&mut*&self.0, timeout_us)} > 0 {true} else {false}
+        if unsafe{cql_ffi::cass_future_wait_timed(self.0, timeout_us)} > 0 {true} else {false}
     }
 
     pub fn get_result(&mut self) -> Option<CassResult> {unsafe{
-        Some(CassResult(*cql_ffi::cass_future_get_result(&mut self.0)))
+        Some(CassResult(cql_ffi::cass_future_get_result(self.0)))
     }}
 
     pub fn get_prepared(&mut self) -> CassPrepared {unsafe{
-        CassPrepared(*cql_ffi::cass_future_get_prepared(&mut self.0))
+        CassPrepared(cql_ffi::cass_future_get_prepared(self.0))
     }}
 
     pub fn error_code(&mut self) -> Result<(),CassError> {unsafe{
-        let rc = cql_ffi::cass_future_error_code(&mut self.0);
+        let rc = cql_ffi::cass_future_error_code(self.0);
         match rc {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            err => Err(CassError(err))
+            err => Err(CassError(&err))
         }
     }}
 
-    pub fn is_error(&self) -> bool {
+    pub fn is_error(&mut self) -> bool {
         match self.error_code() {
             Ok(_) => false,
             Err(_) => true
@@ -62,12 +64,12 @@ impl CassFuture {
     }
 
     pub fn error_message(&mut self) -> CassString {unsafe{
-        CassString(cql_ffi::cass_future_error_message(&mut self.0))
+        CassString(cql_ffi::cass_future_error_message(self.0))
     }}
 }
 
 impl Drop for CassFuture {
     fn drop(&mut self){unsafe{
-        cql_ffi::cass_future_free(&mut*&self.0)
+        cql_ffi::cass_future_free(self.0)
     }}
 }

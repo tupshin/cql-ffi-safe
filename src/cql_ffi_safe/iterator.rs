@@ -7,7 +7,9 @@ use cql_ffi_safe::row::CassRow;
 use cql_ffi_safe::column::CassColumn;
 use cql_ffi_safe::schema::CassSchemaMeta;
 
-pub struct CassIterator(pub cql_ffi::CassIterator);
+use std::ptr;
+
+pub struct CassIterator(pub *mut cql_ffi::CassIterator);
 
 pub trait ToCassIterator {
     fn to_cass_iterator(&self) -> CassIterator;
@@ -15,23 +17,23 @@ pub trait ToCassIterator {
 
 impl CassIterator {
     pub fn free(&mut self) {
-        unsafe{cql_ffi::cass_iterator_free(&mut self.0)};
+        unsafe{cql_ffi::cass_iterator_free(self.0)};
     }
 
     pub fn get_type(&mut self) -> CassIteratorType {
-        unsafe{cql_ffi::cass_iterator_type(&mut self.0)}
+        unsafe{cql_ffi::cass_iterator_type(self.0)}
     }
 
     pub fn get_row(&mut self) -> CassRow {unsafe{
-        CassRow(*cql_ffi::cass_iterator_get_row(&mut self.0))
+        CassRow(cql_ffi::cass_iterator_get_row(self.0))
     }}
 
     pub fn get_column(&mut self) -> CassColumn {unsafe{
-        CassColumn(*cql_ffi::cass_iterator_get_column(&mut self.0))
+        CassColumn(cql_ffi::cass_iterator_get_column(self.0))
     }}
     
     pub fn get_value(&mut self) -> CassValue {unsafe{
-        CassValue(*cql_ffi::cass_iterator_get_value(&mut self.0))
+        CassValue(cql_ffi::cass_iterator_get_value(self.0))
     }}
 
     //~ fn get_map_key(&mut self) -> CassValue {unsafe{
@@ -44,17 +46,17 @@ impl CassIterator {
 
     pub fn get_map_pair(&mut self) -> (CassValue,CassValue) {unsafe{
         (
-            CassValue(*cql_ffi::cass_iterator_get_map_key(&mut self.0)),
-            CassValue(*cql_ffi::cass_iterator_get_map_value(&mut self.0))
+            CassValue(cql_ffi::cass_iterator_get_map_key(self.0)),
+            CassValue(cql_ffi::cass_iterator_get_map_value(self.0))
         )
     }}
 
     pub fn get_schema_meta(&mut self) -> CassSchemaMeta {unsafe{
-        CassSchemaMeta(*cql_ffi::cass_iterator_get_schema_meta(&mut self.0))
+        CassSchemaMeta(ptr::read(cql_ffi::cass_iterator_get_schema_meta(self.0)))
     }}
 
     pub fn has_next(&mut self) -> bool {unsafe{
-        if cql_ffi::cass_iterator_next(&mut self.0) > 0 {true} else {false}
+        if cql_ffi::cass_iterator_next(self.0) > 0 {true} else {false}
     }}
 
 }

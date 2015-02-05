@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 
 extern crate cql_ffi_safe;
 
@@ -22,7 +22,7 @@ fn insert_into_collections(session:&mut CassSession, key:&str, items:Vec<String>
     }
     try!(statement.bind_string(0, key));
     try!(statement.bind_collection(1, collection));
-    let future = session.execute(statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     Ok(())
@@ -55,7 +55,7 @@ fn main() {
             session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
             insert_into_collections(&mut session, "test", items).unwrap();
             select_from_collections(&mut session, "test").unwrap();
-            let close_future = session.close();
+            let mut close_future = session.close();
             close_future.wait();
         },
         Err(err) => panic!("{:?}",err)

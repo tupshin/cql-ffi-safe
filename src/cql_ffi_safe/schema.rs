@@ -4,17 +4,19 @@ use cql_ffi_safe::string::CassString;
 use cql_ffi_safe::value::CassValue;
 use cql_ffi_safe::iterator::CassIterator;
 
+use std::ptr;
+
 pub use cql_ffi::CassSchemaMetaType;
 
 pub struct CassSchemaMetaField(pub cql_ffi::CassSchemaMetaField);
 
 impl CassSchemaMetaField {
-    pub fn meta_field_name(&self) -> CassString {unsafe{
+    pub fn meta_field_name(&mut self) -> CassString {unsafe{
         CassString(cql_ffi::cass_schema_meta_field_name(&self.0))
     }}
 
     pub fn meta_field_value(field: CassSchemaMetaField) -> CassValue {unsafe{
-        CassValue(*cql_ffi::cass_schema_meta_field_value(&field.0))
+        CassValue(cql_ffi::cass_schema_meta_field_value(&field.0))
     }}
 }
 
@@ -28,19 +30,19 @@ impl CassSchemaMeta {
     }}
 
     pub fn get_entry(&self, name: &str) -> Self {unsafe{
-        CassSchemaMeta(*cql_ffi::cass_schema_meta_get_entry(&self.0, name.as_ptr() as *const i8))
+        CassSchemaMeta(ptr::read(cql_ffi::cass_schema_meta_get_entry(&self.0, name.as_ptr() as *const i8)))
     }}
 
     pub fn get_field(&self, name: &str) -> CassSchemaMetaField {unsafe{
-        CassSchemaMetaField(*cql_ffi::cass_schema_meta_get_field(&self.0, name.as_ptr() as *const i8))
+        CassSchemaMetaField(ptr::read(cql_ffi::cass_schema_meta_get_field(&self.0, name.as_ptr() as *const i8)))
     }}
 
     pub fn iter(&self) -> CassIterator {unsafe{
-        CassIterator(*cql_ffi::cass_iterator_from_schema_meta(&self.0))
+        CassIterator(cql_ffi::cass_iterator_from_schema_meta(&self.0))
     }}
 
     pub fn iter_fields(&self) -> CassIterator {unsafe{
-        CassIterator(*cql_ffi::cass_iterator_fields_from_schema_meta(&self.0))
+        CassIterator(cql_ffi::cass_iterator_fields_from_schema_meta(&self.0))
     }}
 }
 
@@ -53,11 +55,11 @@ impl Drop for CassSchema {
 
 impl CassSchema {
     pub fn get_keyspace(&self, keyspace_name: &str) -> CassSchemaMeta {unsafe{
-        CassSchemaMeta(*cql_ffi::cass_schema_get_keyspace(&self.0, keyspace_name.as_ptr() as *const i8))
+        CassSchemaMeta(ptr::read(cql_ffi::cass_schema_get_keyspace(&self.0, keyspace_name.as_ptr() as *const i8)))
     }}
 
     pub fn iter(&self) -> CassIterator {unsafe{
-        CassIterator(*cql_ffi::cass_iterator_from_schema(&self.0))
+        CassIterator(cql_ffi::cass_iterator_from_schema(&self.0))
     }}
 
 }

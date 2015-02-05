@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 extern crate cql_ffi_safe;
 
 use cql_ffi_safe::CassSession;
@@ -17,7 +17,7 @@ static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.asyn
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query.clone(),0);
-    let ref future = session.execute(statement);
+    let ref mut future = session.execute(statement);
     future.wait();
     match future.error_code() {
         Ok(_) => {Ok(())},
@@ -63,10 +63,10 @@ pub fn main() {
             }
             match insert_into_async(session, "test") {
                 Ok(result) => println!("{:?}",result),
-                Err(err) => panic!("{:?}",err)
+                Err(err) => panic!("{:?}",err.desc)
             }
             session.close().wait();
         },
-        Err(err) => panic!(err)
+        Err(err) => panic!("err: {:?}", err),
     }
 }

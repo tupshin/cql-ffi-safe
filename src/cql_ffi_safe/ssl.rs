@@ -5,6 +5,8 @@ use cql_ffi::CassError::CASS_OK;
 use cql_ffi_safe::string::CassString;
 use cql_ffi_safe::error::CassError;
 
+use std::ptr;
+
 pub struct CassSsl(pub cql_ffi::CassSsl);
 
 #[unsafe_destructor]
@@ -16,14 +18,14 @@ impl Drop for CassSsl {
 
 impl CassSsl {
     pub fn new() -> CassSsl {unsafe{
-        CassSsl(*cql_ffi::cass_ssl_new())
+        CassSsl(ptr::read(cql_ffi::cass_ssl_new()))
     }}
 
     //FIXME make this take a &str
     pub fn add_trusted_cert(&mut self, cert: CassString) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_add_trusted_cert(&mut self.0, cert.0) {
             CASS_OK => Ok(()),
-            err => Err(CassError(err))
+            err => Err(CassError(&err))
         }
     }}
 
@@ -34,7 +36,7 @@ impl CassSsl {
     pub fn set_cert(&mut self, cert: CassString) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_set_cert(&mut self.0, cert.0) {
             CASS_OK => Ok(()),
-            err => Err(CassError(err))
+            err => Err(CassError(&err))
         }
     }}
 
@@ -42,7 +44,7 @@ impl CassSsl {
     pub fn set_private_key(&mut self, key: CassString, password: &str) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_ssl_set_private_key(&mut self.0, key.0, password.as_ptr() as *const i8) {
             CASS_OK => Ok(()),
-            err => Err(CassError(err))
+            err => Err(CassError(&err))
         }
     }}
 }

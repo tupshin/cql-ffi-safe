@@ -1,5 +1,3 @@
-#![feature(core,collections)]
-
 extern crate cql_ffi_safe;
 extern crate cql_ffi;
 
@@ -22,7 +20,7 @@ static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.basi
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query,0);
-    let future = session.execute(statement);
+    let mut future = session.execute(statement);
     future.wait();
     future.error_code()
 }
@@ -68,12 +66,15 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
         (iter_type,true) => {panic!("wasn't expecting iterator type: {:?}", iter_type)}
     }
     //FIXME it is temporarily necessary to free your own results, as the Drop trait in cass_result.rs results in memory corruption
-    unsafe{cql_ffi::cass_result_free(result.unwrap().result)};
+    unsafe{cql_ffi::cass_result_free(result.unwrap().0)};
 }
 
-
 fn main() {
-    match CassCluster::new().set_contact_points("127.0.0.1,127.0.0.2,127.0.0.3") {
+
+    let mut cluster = CassCluster::new();
+    
+    match cluster.set_contact_points("127.0.0.1,127.0.0.2,127.0.0.3") {
+        Err(err) => panic!("err: {:?}", err),
         Ok(cluster) => {
             let mut session = CassSession::new();
             let input = Basic{bln:true, flt:0.001f32, dbl:0.0002f64, i32:1, i64:2 };
@@ -89,10 +90,9 @@ fn main() {
             }
             match select_from_basic(&mut session,"test") {
                 Ok(output) => assert!(input == output),
-                Err(err) => panic!(err)
+                Err(err) => panic!("err: {:?}", err),
             }
             session.close().wait();
         },
-        Err(err) => panic!(err)
     }
 }

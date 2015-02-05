@@ -1,8 +1,11 @@
 extern crate cql_ffi;
 
+use cql_ffi_safe::error::CassError;
+
 use std::str::FromStr;
 use std::string::ToString;
 use std::slice;
+use std::error::Error;
 
 #[derive(Copy,Debug)]
 pub struct CassString(pub cql_ffi::CassString);
@@ -17,8 +20,11 @@ impl ToString for CassString {
 }
 
 impl FromStr for CassString {
-    fn from_str(string:&str) -> Option<Self> {unsafe{
+    type Err = CassError;
+    fn from_str(string:&str) -> Result<Self,CassError> {unsafe{
         let cass_str = cql_ffi::cass_string_init2(string.as_ptr() as *const i8,string.len() as u64);
-        Some(CassString(cass_str))
+        Ok(CassString(cass_str))
     }}
+
+    
 }

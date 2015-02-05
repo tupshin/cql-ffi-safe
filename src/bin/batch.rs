@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 
 extern crate cql_ffi_safe;
 
@@ -21,7 +21,7 @@ static CREATE_TABLE_CMD: &'static str = "CREATE TABLE examples.pairs (key text, 
 
 static CONTACT_POINTS: &'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
 
-fn insert_into_batch_with_prepared<'a>(session:&mut CassSession, pairs:Vec<Pair>, prepared:CassPrepared<'a>)-> Result<CassPrepared<'a>,CassError> {
+fn insert_into_batch_with_prepared(session:&mut CassSession, pairs:Vec<Pair>, prepared:CassPrepared)-> Result<CassPrepared,CassError> {
     let mut batch = CassBatch::new(CassBatchType::LOGGED);
     for pair in pairs.iter() {
         let mut statement = prepared.bind();
@@ -34,13 +34,13 @@ fn insert_into_batch_with_prepared<'a>(session:&mut CassSession, pairs:Vec<Pair>
     try!(statement.bind_string(1, "4"));
     try!(batch.add_statement(statement));
 
-    let future = session.execute_batch(batch);
+    let mut future = session.execute_batch(batch);
     future.wait();
     Ok(prepared)
 }
 
-fn prepare_insert_into_batch<'a>(session:&mut CassSession<'a>) -> Result<CassPrepared<'a>,CassError> {
-    let future = session.prepare(INSERT_QUERY_CMD.to_string());
+fn prepare_insert_into_batch(session:&mut CassSession) -> Result<CassPrepared,CassError> {
+    let mut future = session.prepare(INSERT_QUERY_CMD.to_string());
     future.wait();
     Ok(future.get_prepared())
 }
@@ -59,8 +59,7 @@ fn main() {
                 Ok(_) => {}
                 Err(err) => panic!("err: {:?}", err),
             }
-            let close_future = session.close();
-            close_future.wait();
+            let mut close_future = session.close();
             close_future.wait();
         },
         Err(err) => panic!("err: {:?}", err)

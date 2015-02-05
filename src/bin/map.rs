@@ -1,4 +1,4 @@
-#![feature(core,collections)]
+#![feature(core)]
 
 extern crate cql_ffi_safe;
 
@@ -27,7 +27,7 @@ fn insert_into_maps(session:&mut CassSession, key:String, items:Vec<(String,i32)
     }
     try!(statement.bind_string(0, key.as_slice()));
     try!(statement.bind_collection(1, collection));
-    let future = session.execute(statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     Ok(())
@@ -67,7 +67,7 @@ fn main() {
             session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
             insert_into_maps(&mut session, "test".to_string(), items).unwrap();
             select_from_maps(&mut session, "test").unwrap();
-            let close_future = session.close();
+            let mut close_future = session.close();
             close_future.wait();
         }
     }
