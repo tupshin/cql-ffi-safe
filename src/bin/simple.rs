@@ -1,11 +1,7 @@
 #![feature(core)]
 extern crate cql_ffi_safe;
 
-use cql_ffi_safe::CassStatement;
-use cql_ffi_safe::CassSession;
-use cql_ffi_safe::CassCluster;
-use cql_ffi_safe::FromCol;
-use cql_ffi_safe::CassError;
+use cql_ffi_safe::*;
 
 static SELECT_QUERY_CMD:&'static str = "SELECT keyspace_name,durable_writes FROM system.schema_keyspaces;";
 static CONTACT_POINTS:&'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
