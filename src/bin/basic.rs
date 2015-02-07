@@ -20,7 +20,7 @@ static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.basi
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query,0);
-    let mut future = session.execute(&statement);
+    let mut future = session.execute(statement);
     future.wait();
     future.error_code()
 }
@@ -38,7 +38,7 @@ fn insert_into_basic(session:&mut CassSession, key:&str, basic:Basic) -> Result<
         I32(basic.i32),
         I64(basic.i64)
     )));
-    let mut future = session.execute(&statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     Ok(())
@@ -48,7 +48,7 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
     let query = SELECT_QUERY_CMD;
     let mut statement = CassStatement::new(query, 1);
     try!(statement.bind_string(0, key));
-    let mut future = session.execute(&statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     let result = future.get_result();
@@ -81,7 +81,7 @@ fn main() {
             let mut session = CassSession::new();
             let input = Basic{bln:true, flt:0.001f32, dbl:0.0002f64, i32:1, i64:2 };
             session.connect(cluster).wait();
-            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD, 0));
+            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
             match execute_query(&mut session, CREATE_TABLE_CMD) {
                 Ok(_) => {}
                 Err(err) => panic!("err: {:?}", err),

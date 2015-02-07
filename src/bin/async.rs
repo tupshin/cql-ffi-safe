@@ -17,7 +17,7 @@ static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.asyn
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query.clone(),0);
-    let ref mut future = session.execute(&statement);
+    let ref mut future = session.execute(statement);
     future.wait();
     match future.error_code() {
         Ok(_) => {Ok(())},
@@ -40,7 +40,7 @@ fn insert_into_async(session: &mut CassSession, key:&str) -> Result<(),CassError
             I32(i.to_i32().unwrap() * 10),
            // I64( i.to_i64().unwrap() * 100)
         )));
-        let future = session.execute(&statement);
+        let future = session.execute(statement);
         futures.push(future);
     }
     for mut future in futures.iter_mut() {
@@ -55,8 +55,8 @@ pub fn main() {
         Ok(cluster) => {
             let ref mut session = CassSession::new();
             session.connect(cluster).wait();
-            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD, 0));
-            session.execute(&CassStatement::new(CREATE_TABLE_CMD, 0));
+            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD, 0));
+            session.execute(CassStatement::new(CREATE_TABLE_CMD, 0));
             match execute_query(session, "USE examples") {
                 Ok(result) => println!("{:?}",result),
                 Err(err) => panic!("{:?}",err)

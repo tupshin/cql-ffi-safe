@@ -27,7 +27,7 @@ fn insert_into_maps(session:&mut CassSession, key:String, items:Vec<(String,i32)
     }
     try!(statement.bind_string(0, key.as_slice()));
     try!(statement.bind_collection(1, collection));
-    let mut future = session.execute(&statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     Ok(())
@@ -36,7 +36,7 @@ fn insert_into_maps(session:&mut CassSession, key:String, items:Vec<(String,i32)
 fn select_from_maps(session: &mut CassSession, key:&str) -> Result<(),CassError> {
     let mut statement = CassStatement::new(SELECT_QUERY_CMD, 1);
     try!(statement.bind_string(0, key));
-    let mut future = session.execute(&statement);
+    let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
     let result = future.get_result().unwrap();
@@ -63,8 +63,8 @@ fn main() {
                 ("mango".to_string(), 4)
             );
             
-            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD,0));
-            session.execute(&CassStatement::new(CREATE_TABLE_CMD,0));
+            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD,0));
+            session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
             insert_into_maps(&mut session, "test".to_string(), items).unwrap();
             select_from_maps(&mut session, "test").unwrap();
             let mut close_future = session.close();

@@ -37,7 +37,7 @@ impl CassSession {
         CassFuture(cql_ffi::cass_session_prepare(self.0, string.0))
     }}
 
-    pub fn execute(&mut self, statement:&CassStatement) -> CassFuture {unsafe{
+    pub fn execute(&mut self, statement:CassStatement) -> CassFuture {unsafe{
         println!("executing statement: {:?}",statement);
         CassFuture(cql_ffi::cass_session_execute(self.0, statement.0))
     }}

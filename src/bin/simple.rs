@@ -12,7 +12,7 @@ fn main() {
         Ok(cluster) => {
             let mut session = CassSession::new();
             session.connect(cluster).wait();
-            let result_iter = session.execute(&CassStatement::new(SELECT_QUERY_CMD,0))
+            let result_iter = session.execute(CassStatement::new(SELECT_QUERY_CMD,0))
                 .wait()
                 .get_result()
                 .unwrap()

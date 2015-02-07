@@ -52,8 +52,8 @@ fn main() {
             let mut session = CassSession::new();
             let pairs = vec!(Pair{key:"a", value:"1"}, Pair{key:"b", value:"2"});
             session.connect(cluster).wait();
-            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD,0));
-            session.execute(&CassStatement::new(CREATE_TABLE_CMD,0));
+            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD,0));
+            session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
             let prepared = prepare_insert_into_batch(&mut session).unwrap();    
             match insert_into_batch_with_prepared(&mut session, pairs, prepared) {
                 Ok(_) => {}
