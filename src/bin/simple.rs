@@ -16,17 +16,16 @@ fn main() {
         Ok(cluster) => {
             let mut session = CassSession::new();
             session.connect(cluster).wait();
-            let mut future = session.execute(&CassStatement::new(SELECT_QUERY_CMD,0));
-            future.wait();
-            for row in future.get_result().unwrap().iter() {
+            let result_iter = session.execute(&CassStatement::new(SELECT_QUERY_CMD,0))
+                .wait()
+                .get_result()
+                .unwrap()
+                .iter();
+            for row in result_iter {
                 let value:Result<String,CassError> = FromCol::from_col(row.get_column(0));
                 match value {
-                    Ok(ks) => {
-                        println!("ks: {:?}",ks);
-                        let mut close_future = session.close();
-                        close_future.wait();
-                    },
-                    Err(err) => println!("Error: {:?}", err)
+                    Err(err) => println!("Error: {:?}", err),
+                    Ok(ks) => println!("ks: {:?}",ks)
                 }
             }
         }

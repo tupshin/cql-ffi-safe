@@ -29,7 +29,7 @@ impl CassFuture {
         if unsafe{cql_ffi::cass_future_ready(self.0)} > 0 {true} else {false}
     }
 
-    pub fn wait(&mut self) -> &Self {
+    pub fn wait(&mut self) -> &mut Self {
         unsafe{cql_ffi::cass_future_wait(self.0)};
         self
     }
