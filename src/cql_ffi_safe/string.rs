@@ -5,7 +5,6 @@ use cql_ffi_safe::error::CassError;
 use std::str::FromStr;
 use std::string::ToString;
 use std::slice;
-use std::ptr;
 
 #[derive(Copy,Debug)]
 pub struct CassString(pub cql_ffi::CassString);

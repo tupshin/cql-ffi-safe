@@ -17,7 +17,6 @@ use std::str::FromStr;
 use std::fmt::Formatter;
 use std::fmt;
 use std::fmt::Debug;
-use std::ptr;
 
 
 #[allow(missing_copy_implementations)]

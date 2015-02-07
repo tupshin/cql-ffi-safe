@@ -45,7 +45,6 @@ fn prepare_insert_into_batch(session:&mut CassSession) -> Result<CassPrepared,Ca
     Ok(future.get_prepared())
 }
 
-
 fn main() {
     match CassCluster::new().set_contact_points(CONTACT_POINTS) {
         Ok(cluster) => {

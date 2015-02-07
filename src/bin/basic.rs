@@ -1,8 +1,8 @@
+#![feature(core)]
 extern crate cql_ffi_safe;
 extern crate cql_ffi;
 
 use cql_ffi_safe::*;
-use cql_ffi::cass_result_free;
 
 #[derive(Debug,Copy,PartialEq)]
 struct Basic {
@@ -17,6 +17,8 @@ static INSERT_QUERY_CMD:&'static str = "INSERT INTO examples.basic (key, bln, fl
 static SELECT_QUERY_CMD:&'static str = "SELECT * FROM examples.basic WHERE key = ?";
 static CREATE_KEYSPACE_CMD:&'static str = "CREATE KEYSPACE IF NOT EXISTS examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '3' };";
 static CREATE_TABLE_CMD:&'static str = "CREATE TABLE IF NOT EXISTS examples.basic (key text, bln boolean, flt float, dbl double, i32 int, i64 bigint, PRIMARY KEY (key));";
+
+static CONTACT_POINTS:&'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
 
 fn execute_query(session: &mut CassSession, query: &str) -> Result<(),CassError> {
     let statement = CassStatement::new(query,0);
@@ -48,35 +50,28 @@ fn select_from_basic(session:&mut CassSession, key:&str) -> Result<Basic,CassErr
     let query = SELECT_QUERY_CMD;
     let mut statement = CassStatement::new(query, 1);
     try!(statement.bind_string(0, key));
-    let mut future = session.execute(statement);
-    future.wait();
-    try!(future.error_code());
-    let result = future.get_result();
-    let mut iterator = result.unwrap().iter();
-    match (iterator.get_type(),iterator.has_next()) {
-        (CassIteratorType::RESULT,true) => return {
-            let row = iterator.get_row();
-            Ok(Basic{
+    let result_iter = session.execute(statement)
+        .wait()
+        .get_result()
+        .unwrap()
+        .iter();
+    for row in result_iter {
+            return Ok(Basic{
+                //FIXME use FromCol once https://github.com/rust-lang/rust/issues/22037 is fixed
                 bln:try!(row.get_column(1).get_bool()),
                 dbl:try!(row.get_column(2).get_double()),
                 flt:try!(row.get_column(3).get_float()),
                 i32:try!(row.get_column(4).get_int32()),
                 i64:try!(row.get_column(5).get_int64())
-            })
-        },
-        (iter_type,true) => {panic!("wasn't expecting iterator type: {:?}", iter_type)}
-        (err,false) => panic!("{:?}",err),
+            });
     }
-    //FIXME it is temporarily necessary to free your own results, as the Drop trait in cass_result.rs results in memory corruption
-    unsafe{cql_ffi::cass_result_free(result.unwrap().0)};
+    panic!("no results");
 }
 
 fn main() {
-
-    let mut cluster = CassCluster::new();
-    
-    match cluster.set_contact_points("127.0.0.1,127.0.0.2,127.0.0.3") {
+    match CassCluster::new().set_contact_points(CONTACT_POINTS) {
         Err(err) => panic!("err: {:?}", err),
+
         Ok(cluster) => {
             let mut session = CassSession::new();
             let input = Basic{bln:true, flt:0.001f32, dbl:0.0002f64, i32:1, i64:2 };
@@ -95,6 +90,6 @@ fn main() {
                 Err(err) => panic!("select err: {:?}", err),
             }
             session.close().wait();
-        },
+        }
     }
 }

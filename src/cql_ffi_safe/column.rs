@@ -11,7 +11,6 @@ use cql_ffi_safe::inet::CassInet;
 use cql_ffi_safe::value::CassBindable;
 
 use std::mem;
-use std::ptr;
 
 pub use cql_ffi::CassColumnType;
 
@@ -34,6 +33,46 @@ impl FromCol for bool {
     }
 }
 
+impl FromCol for i64 {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_int64()
+    }
+}
+
+impl FromCol for i32 {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_int32()
+    }
+}
+
+impl FromCol for f32 {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_float()
+    }
+}
+
+impl FromCol for f64 {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_double()
+    }
+}
+
+impl FromCol for CassUuid {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_uuid()
+    }
+}
+impl FromCol for CassInet {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        column.get_inet()
+    }
+}
+
+impl FromCol for Vec<u8> {
+    fn from_col(column: CassColumn) -> Result<Self,CassError> {
+        Ok(try!(column.get_bytes()).as_bytes())
+    }
+}
 impl CassColumn {
 
     pub fn get(&self) -> Result<CassBindable, CassError> {
@@ -44,7 +83,7 @@ impl CassColumn {
             VARCHAR|ASCII|TEXT => Ok(CassBindable::STR(try!(self.get_string()).to_string())),
             INT => Ok(CassBindable::I32(try!(self.get_int32()))),
             BIGINT => Ok(CassBindable::I64(try!(self.get_int64()))),
-            BLOB => panic!(),//Ok(CassBindable::BLOB(try!(self.get_bytes()))),
+            BLOB => Ok(CassBindable::BLOB(try!(self.get_bytes()).as_bytes())),
             BOOLEAN => Ok(CassBindable::BOOL(try!(self.get_bool()))),
             COUNTER => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             DECIMAL => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
@@ -62,7 +101,6 @@ impl CassColumn {
     }
 
     pub fn get_type(&self) -> CassValueType {unsafe{
-        //println!("type: {:?}",self);
         cql_ffi::cass_value_type(self.0)
     }}
 
@@ -134,7 +172,7 @@ impl CassColumn {
         }
     }}
 
-    //FIXME this should emit a uuid::Uuid instead of a CassUuid
+    //FIXME this should emit a TcpAddr instead of a CassInet
     pub fn get_inet(&self) -> Result<CassInet, CassError> {unsafe{
         let output =  mem::zeroed();
         match cql_ffi::cass_value_get_inet(self.0, output) {

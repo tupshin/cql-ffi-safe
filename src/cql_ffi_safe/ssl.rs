@@ -5,8 +5,6 @@ use cql_ffi::CassError::CASS_OK;
 use cql_ffi_safe::string::CassString;
 use cql_ffi_safe::error::CassError;
 
-use std::ptr;
-
 pub struct CassSsl(pub *mut cql_ffi::CassSsl);
 
 #[unsafe_destructor]

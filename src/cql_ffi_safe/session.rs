@@ -9,7 +9,6 @@ use cql_ffi_safe::error::CassError;
 use cql_ffi_safe::prepared::CassPrepared;
 
 use std::str::FromStr;
-use std::ptr;
 
 pub struct CassSession(pub *mut cql_ffi::CassSession);
 
