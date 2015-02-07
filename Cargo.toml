@@ -4,7 +4,7 @@ description = "A safe wrapper of the cql-ffi crate"
 license = "Apache-2.0"
 homepage = "https://github.com/tupshin/cql-ffi-safe"
 repository = "https://github.com/tupshin/cql-ffi-safe"
-version = "0.0.6"
+version = "0.0.7"
 
 authors = ["Tupshin Harper <tupshin@tupshin.com>"]
 

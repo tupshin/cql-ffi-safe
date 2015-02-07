@@ -12,6 +12,8 @@ use std::str::FromStr;
 
 pub struct CassSession(pub *mut cql_ffi::CassSession);
 
+unsafe impl Send for CassSession{}
+
 impl Drop for CassSession {
     fn drop(&mut self) {unsafe{
         cql_ffi::cass_session_free(self.0)
