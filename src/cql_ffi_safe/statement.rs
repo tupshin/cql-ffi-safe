@@ -88,6 +88,8 @@ impl CassStatement {
                 &CassBindable::BLOB(ref val) => try!(self.bind_bytes(idx,val)),
                 &CassBindable::UUID(_) => return Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
                 &CassBindable::STR(ref val) => try!(self.bind_string(idx,val.as_slice())),
+                &CassBindable::LIST(ref val) => try!(self.bind_collection(idx,val)),
+                &CassBindable::SET(ref val) => try!(self.bind_collection(idx,val)),
             };
             idx += 1;
         }
@@ -183,7 +185,7 @@ impl CassStatement {
         //~ }
     //~ }}
     
-    pub fn bind_collection(&mut self, index: u64, collection:CassCollection) -> Result<(),CassError> {unsafe{
+    pub fn bind_collection(&mut self, index: u64, collection:&CassCollection) -> Result<(),CassError> {unsafe{
         match cql_ffi::cass_statement_bind_collection(self.0, index, collection.0) {
             CASS_OK => Ok(()),
             err => Err(CassError(err))

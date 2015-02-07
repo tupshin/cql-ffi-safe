@@ -8,14 +8,17 @@ use cql_ffi_safe::decimal::CassDecimal;
 use cql_ffi_safe::bytes::CassBytes;
 use cql_ffi_safe::string::CassString;
 use cql_ffi_safe::uuid::CassUuid;
+use cql_ffi_safe::iterator::CassIterator;
+use cql_ffi_safe::collection::CassCollection;
 
 use std::mem;
+use std::hash::Hash;
 
 #[allow(missing_copy_implementations)]
 pub struct CassValue(pub *const cql_ffi::CassValue);
 
 #[derive(Debug)]
-pub enum CassBindable {
+pub enum CassBindable<T=(),U=()> {
     BOOL(bool),
     I32(i32),
     I64(i64),
@@ -23,7 +26,25 @@ pub enum CassBindable {
     F64(f64),
     STR(String),
     BLOB(Vec<u8>),
-    UUID(CassUuid) //FIXME this shoud return a Rust uuid once I figure out conversion
+    UUID(CassUuid), //FIXME this shoud return a Rust uuid once I figure out conversion
+    LIST(CassCollection), //FIXME
+    //MAP(Hash<T,U>),
+    SET(CassCollection)
+}
+
+pub enum CassReturnable<T=(),U=()> {
+    BOOL(bool),
+    I32(i32),
+    I64(i64),
+    F32(f32),
+    F64(f64),
+    STR(String),
+    BLOB(Vec<u8>),
+    UUID(CassUuid), //FIXME this shoud return a Rust uuid once I figure out conversion
+    LIST(CassIterator), //FIXME
+    //MAP(Hash<T,U>),
+    SET(Vec<T>)
+
 }
 
 impl CassValue {

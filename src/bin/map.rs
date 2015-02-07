@@ -26,7 +26,7 @@ fn insert_into_maps(session:&mut CassSession, key:String, items:Vec<(String,i32)
         try!(collection.append(I32(item.1)));
     }
     try!(statement.bind_string(0, key.as_slice()));
-    try!(statement.bind_collection(1, collection));
+    try!(statement.bind_collection(1, &collection));
     let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());

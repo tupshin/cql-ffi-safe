@@ -8,6 +8,7 @@ use cql_ffi_safe::inet::CassInet;
 use cql_ffi_safe::decimal::CassDecimal;
 use cql_ffi_safe::value::CassBindable;
 
+#[derive(Debug)]
 pub struct CassCollection(pub *mut cql_ffi::CassCollection);
 
 impl CassCollection {

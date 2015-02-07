@@ -7,6 +7,7 @@ use cql_ffi_safe::row::CassRow;
 use cql_ffi_safe::column::CassColumn;
 use cql_ffi_safe::schema::CassSchemaMeta;
 
+#[derive(Debug)]
 pub struct CassIterator(pub *mut cql_ffi::CassIterator);
 
 pub trait ToCassIterator {

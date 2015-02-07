@@ -9,6 +9,7 @@ use cql_ffi_safe::decimal::CassDecimal;
 use cql_ffi_safe::iterator::CassIterator;
 use cql_ffi_safe::inet::CassInet;
 use cql_ffi_safe::value::CassBindable;
+use cql_ffi_safe::value::CassReturnable;
 
 use std::mem;
 
@@ -75,28 +76,28 @@ impl FromCol for Vec<u8> {
 }
 impl CassColumn {
 
-    pub fn get(&self) -> Result<CassBindable, CassError> {
+    pub fn get(&self) -> Result<CassReturnable, CassError> {
         use cql_ffi::CassValueType::*;
         match self.get_type() {
             UNKNOWN => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             CUSTOM => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
-            VARCHAR|ASCII|TEXT => Ok(CassBindable::STR(try!(self.get_string()).to_string())),
-            INT => Ok(CassBindable::I32(try!(self.get_int32()))),
-            BIGINT => Ok(CassBindable::I64(try!(self.get_int64()))),
-            BLOB => Ok(CassBindable::BLOB(try!(self.get_bytes()).as_bytes())),
-            BOOLEAN => Ok(CassBindable::BOOL(try!(self.get_bool()))),
+            VARCHAR|ASCII|TEXT => Ok(CassReturnable::STR(try!(self.get_string()).to_string())),
+            INT => Ok(CassReturnable::I32(try!(self.get_int32()))),
+            BIGINT => Ok(CassReturnable::I64(try!(self.get_int64()))),
+            BLOB => Ok(CassReturnable::BLOB(try!(self.get_bytes()).as_bytes())),
+            BOOLEAN => Ok(CassReturnable::BOOL(try!(self.get_bool()))),
             COUNTER => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             DECIMAL => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             VARINT => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             TIMESTAMP => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             TIMEUUID => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
-            LIST => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
+            LIST => Ok(CassReturnable::LIST(self.collection_iter())),
             MAP => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             SET => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
             INET => Err(CassError::new(cql_ffi::CassError::LIB_INVALID_VALUE_TYPE)),
-            DOUBLE => Ok(CassBindable::I64(try!(self.get_int64()))),
-            FLOAT => Ok(CassBindable::F32(try!(self.get_float()))),
-            UUID => Ok(CassBindable::UUID(try!(self.get_uuid()))),
+            DOUBLE => Ok(CassReturnable::I64(try!(self.get_int64()))),
+            FLOAT => Ok(CassReturnable::F32(try!(self.get_float()))),
+            UUID => Ok(CassReturnable::UUID(try!(self.get_uuid()))),
         }
     }
 

@@ -21,7 +21,7 @@ fn insert_into_collections(session:&mut CassSession, key:&str, items:Vec<String>
         try!(collection.append_string(item.as_slice()));
     }
     try!(statement.bind_string(0, key));
-    try!(statement.bind_collection(1, collection));
+    try!(statement.bind_collection(1, &collection));
     let mut future = session.execute(statement);
     future.wait();
     try!(future.error_code());
