@@ -7,50 +7,59 @@ use std::mem;
 use std::ffi;
 use std::str::FromStr;
 use std::string::ToString;
-use std::ptr;
+use std::fmt::Debug;
+use std::fmt::Formatter;
+use std::fmt::Error;
 
-#[derive(Copy,Debug)]
+
+#[allow(missing_copy_implementations)]
 pub struct CassUuid(pub *const cql_ffi::CassUuid);
 
-pub struct CassUuidGen(cql_ffi::CassUuidGen);
+pub struct CassUuidGen(*mut cql_ffi::CassUuidGen);
 
 impl CassUuidGen {
     pub fn new() -> Self {unsafe{
-        CassUuidGen(ptr::read(cql_ffi::cass_uuid_gen_new()))
+        CassUuidGen(cql_ffi::cass_uuid_gen_new())
     }}
 
     pub fn new_with_node(node: u64) -> Self {unsafe{
-        CassUuidGen(ptr::read(cql_ffi::cass_uuid_gen_new_with_node(node)))
+        CassUuidGen(cql_ffi::cass_uuid_gen_new_with_node(node))
     }}
 
    pub fn time(&mut self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
-        cql_ffi::cass_uuid_gen_time(&mut self.0, output);
+        cql_ffi::cass_uuid_gen_time(self.0, output);
         CassUuid(output)
     }}
 
    pub fn gen_time(&mut self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
-        cql_ffi::cass_uuid_gen_time(&mut self.0, output);
+        cql_ffi::cass_uuid_gen_time(self.0, output);
         CassUuid(output)
     }}
 
     pub fn gen_random(&mut self) -> CassUuid {unsafe{
         let output =  mem::zeroed();
-        cql_ffi::cass_uuid_gen_random(&mut self.0, output);
+        cql_ffi::cass_uuid_gen_random(self.0, output);
         CassUuid(output)
     }}
 
     pub fn gen_from_time(&mut self, timestamp: u64) -> CassUuid {unsafe{
         let output =  mem::zeroed();
-        cql_ffi::cass_uuid_gen_from_time(&mut self.0, timestamp, output);
+        cql_ffi::cass_uuid_gen_from_time(self.0, timestamp, output);
         CassUuid(output)
+    }}
+}
+
+impl Debug for CassUuid {
+    fn fmt(&self, f:&mut Formatter) -> Result<(), Error> {unsafe{
+        write!(f, "({}, {})", (*self.0).time_and_version, (*self.0).clock_seq_and_node)
     }}
 }
 
 impl Drop for CassUuidGen {
  fn drop(&mut self) {unsafe{
-        cql_ffi::cass_uuid_gen_free(&mut self.0);
+        cql_ffi::cass_uuid_gen_free(self.0);
     }}
 }
 
@@ -91,7 +100,7 @@ impl FromStr for CassUuid {
         let output =  mem::zeroed();
         match cql_ffi::cass_uuid_from_string(string.as_ptr() as *const i8,output) {
             cql_ffi::CassError::CASS_OK => Ok(CassUuid(output)),
-            err => Err(CassError(&err))
+            err => Err(CassError(err))
         }
     }}
 }

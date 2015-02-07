@@ -24,15 +24,15 @@ impl CassBatch {
         let cl_result = unsafe{cql_ffi::cass_batch_set_consistency(self.0, consistency)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
     
-    pub fn add_statement(&mut self, mut statement: CassStatement) -> Result<(),CassError> {
+    pub fn add_statement(&mut self, statement: CassStatement) -> Result<(),CassError> {
         let cl_result = unsafe{cql_ffi::cass_batch_add_statement(self.0, &mut*statement.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 }

@@ -28,6 +28,10 @@ path = "src/bin/collections.rs"
 name = "map"
 path = "src/bin/map.rs"
 
+[[bin]]
+name = "simple"
+path = "src/bin/simple.rs"
+
 [lib]
 name = "cql_ffi_safe"
 path = "src/lib.rs"

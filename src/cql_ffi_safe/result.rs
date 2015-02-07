@@ -7,8 +7,7 @@ use cql_ffi_safe::value::CassValueType;
 use cql_ffi_safe::row::CassRow;
 use cql_ffi_safe::error::CassError;
 
-use std::ptr;
-
+#[allow(missing_copy_implementations)]
 pub struct CassResult(pub *const cql_ffi::CassResult);
 
 impl CassResult {
@@ -42,10 +41,10 @@ impl CassResult {
 
 }
 
-impl Drop for CassResult {
-    fn drop(&mut self) {unsafe{
-    //FIXME why does this lead to memory errors?
-        cql_ffi::cass_result_free(self.0)
-    }}
-}
+//~ impl Drop for CassResult {
+    //~ fn drop(&mut self) {unsafe{
+    //~ //FIXME why does this lead to memory errors?
+        //~ cql_ffi::cass_result_free(self.0)
+    //~ }}
+//~ }
 

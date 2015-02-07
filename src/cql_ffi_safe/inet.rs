@@ -2,7 +2,7 @@ extern crate cql_ffi;
 
 use std::old_io::net::ip::{IpAddr,Ipv4Addr,Ipv6Addr};
 
-#[derive(Copy)]
+#[allow(missing_copy_implementations)]
 pub struct CassInet(pub *const cql_ffi::CassInet);
 
 pub fn init(addr:IpAddr) -> CassInet {unsafe{

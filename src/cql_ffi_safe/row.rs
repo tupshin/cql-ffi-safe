@@ -2,11 +2,9 @@ extern crate cql_ffi;
 extern crate libc;
 
 use cql_ffi_safe::iterator::CassIterator;
-use cql_ffi_safe::value::CassValue;
 use cql_ffi_safe::column::CassColumn;
 
-use std::ptr;
-
+#[allow(missing_copy_implementations)]
 pub struct CassRow(pub *const cql_ffi::CassRow);
 
 impl CassRow {
@@ -18,7 +16,7 @@ impl CassRow {
         CassColumn(cql_ffi::cass_row_get_column(self.0, index))
     }}
 
-    pub fn get_column_by_name(&self, name: &str) -> CassValue {unsafe{
-        CassValue(cql_ffi::cass_row_get_column_by_name(self.0, name.as_ptr() as *const i8))
+    pub fn get_column_by_name(&self, name: &str) -> CassColumn {unsafe{
+        CassColumn(cql_ffi::cass_row_get_column_by_name(self.0, name.as_ptr() as *const i8))
     }}
 }

@@ -2,9 +2,7 @@ extern crate cql_ffi;
 
 use cql_ffi_safe::bytes::CassBytes;
 
-use std::default::Default;
-
-#[derive(Copy)]
+#[allow(missing_copy_implementations)]
 pub struct CassDecimal(pub *const cql_ffi::CassDecimal);
 
 //~ impl Default for CassDecimal {

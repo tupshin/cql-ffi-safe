@@ -22,7 +22,7 @@ fn insert_into_collections(session:&mut CassSession, key:&str, items:Vec<String>
     }
     try!(statement.bind_string(0, key));
     try!(statement.bind_collection(1, collection));
-    let mut future = session.execute(statement);
+    let mut future = session.execute(&statement);
     future.wait();
     try!(future.error_code());
     Ok(())
@@ -31,7 +31,7 @@ fn insert_into_collections(session:&mut CassSession, key:&str, items:Vec<String>
 fn select_from_collections(session: &mut CassSession, key:&str) -> Result<(),CassError> {
     let mut statement = CassStatement::new(SELECT_QUERY_CMD, 1);
     try!(statement.bind_string(0, key));
-    let mut future = session.execute(statement);
+    let mut future = session.execute(&statement);
     future.wait();
     try!(future.error_code());
     let result = future.get_result().unwrap();
@@ -51,8 +51,8 @@ fn main() {
             let items = vec!("apple".to_string(), "orange".to_string(), "banana".to_string(), "mango".to_string());
             let mut session = CassSession::new();
             session.connect(cluster).wait();
-            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD,0));
-            session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
+            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD,0));
+            session.execute(&CassStatement::new(CREATE_TABLE_CMD,0));
             insert_into_collections(&mut session, "test", items).unwrap();
             select_from_collections(&mut session, "test").unwrap();
             let mut close_future = session.close();

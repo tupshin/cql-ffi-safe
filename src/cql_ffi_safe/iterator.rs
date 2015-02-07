@@ -7,8 +7,6 @@ use cql_ffi_safe::row::CassRow;
 use cql_ffi_safe::column::CassColumn;
 use cql_ffi_safe::schema::CassSchemaMeta;
 
-use std::ptr;
-
 pub struct CassIterator(pub *mut cql_ffi::CassIterator);
 
 pub trait ToCassIterator {
@@ -16,6 +14,7 @@ pub trait ToCassIterator {
 }
 
 impl CassIterator {
+
     pub fn free(&mut self) {
         unsafe{cql_ffi::cass_iterator_free(self.0)};
     }
@@ -52,7 +51,7 @@ impl CassIterator {
     }}
 
     pub fn get_schema_meta(&mut self) -> CassSchemaMeta {unsafe{
-        CassSchemaMeta(ptr::read(cql_ffi::cass_iterator_get_schema_meta(self.0)))
+        CassSchemaMeta(cql_ffi::cass_iterator_get_schema_meta(self.0))
     }}
 
     pub fn has_next(&mut self) -> bool {unsafe{
@@ -66,17 +65,22 @@ impl CassIterator {
     //~ Column(CassValue),
 //~ }
 
+impl Drop for CassIterator {
+    fn drop(&mut self) {
+        self.free();
+    }
+}
 
-//~ impl<Self> Iterator for CassIterator {
-    //~ type Item = CassRow;
+impl Iterator for CassIterator {
+    type Item = CassRow;
 
-    //~ pub fn next(&mut self) -> Option<<Self as Iterator>::Item> {unsafe{
-        //~ match cql_ffi::cass_iterator_next(self.iterator) > 0 {
-            //~ true => Some(1u8),
-            //~ false => Some(2u8),
-        //~ }}
-    //~ }
-//~ }
+    fn next(&mut self) -> Option<<Self as Iterator>::Item> {unsafe{
+        match cql_ffi::cass_iterator_next(self.0) > 0 {
+            true => Some(CassRow(cql_ffi::cass_iterator_get_row(self.0))),
+            false => None
+        }}
+    }
+}
 
 
     

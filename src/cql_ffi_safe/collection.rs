@@ -34,7 +34,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_int32(self.0, value)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -42,7 +42,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_int64(self.0, value)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -50,7 +50,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_float(self.0, value)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }    
 
@@ -58,7 +58,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_double(self.0, value)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }    
     
@@ -66,7 +66,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_bool(self.0, if value==true {1} else {0})};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }    
 
@@ -74,7 +74,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_string(self.0,cql_ffi::cass_string_init2(value.as_ptr() as *const i8, value.len() as u64))};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -82,7 +82,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_bytes(self.0, *value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -90,7 +90,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_uuid(self.0, *value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -98,7 +98,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_inet(self.0, *value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 
@@ -106,7 +106,7 @@ impl CassCollection {
         let cl_result = unsafe{cql_ffi::cass_collection_append_decimal(self.0, *value.0)};
         match cl_result {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            _=> Err(CassError::new(&cl_result))
+            _=> Err(CassError::new(cl_result))
         }
     }
 }

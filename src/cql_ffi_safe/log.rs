@@ -2,7 +2,7 @@ extern crate cql_ffi;
 
 use libc::types;
 
-#[derive(Copy)]
+#[allow(missing_copy_implementations)]
 pub struct CassLogLevel(*const cql_ffi::CassLogLevel);
 
 #[derive(Copy)]

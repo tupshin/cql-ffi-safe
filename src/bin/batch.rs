@@ -16,8 +16,8 @@ struct Pair<'a> {
 }
 
 static INSERT_QUERY_CMD: &'static str = "INSERT INTO examples.pairs (key, value) VALUES (?, ?)";
-static CREATE_KEYSPACE_CMD: &'static str = "CREATE KEYSPACE examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '3' };";
-static CREATE_TABLE_CMD: &'static str = "CREATE TABLE examples.pairs (key text, value text, PRIMARY KEY (key));";
+static CREATE_KEYSPACE_CMD: &'static str = "CREATE KEYSPACE IF NOT EXISTS examples WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '3' };";
+static CREATE_TABLE_CMD: &'static str = "CREATE TABLE IF NOT EXISTS examples.pairs (key text, value text, PRIMARY KEY (key));";
 
 static CONTACT_POINTS: &'static str = "127.0.0.1,127.0.0.2,127.0.0.3";
 
@@ -52,8 +52,8 @@ fn main() {
             let mut session = CassSession::new();
             let pairs = vec!(Pair{key:"a", value:"1"}, Pair{key:"b", value:"2"});
             session.connect(cluster).wait();
-            session.execute(CassStatement::new(CREATE_KEYSPACE_CMD,0));
-            session.execute(CassStatement::new(CREATE_TABLE_CMD,0));
+            session.execute(&CassStatement::new(CREATE_KEYSPACE_CMD,0));
+            session.execute(&CassStatement::new(CREATE_TABLE_CMD,0));
             let prepared = prepare_insert_into_batch(&mut session).unwrap();    
             match insert_into_batch_with_prepared(&mut session, pairs, prepared) {
                 Ok(_) => {}

@@ -2,7 +2,7 @@ extern crate cql_ffi;
 
 use std::slice;
 
-#[derive(Copy)]
+#[allow(missing_copy_implementations)]
 pub struct CassBytes(pub *const cql_ffi::CassBytes);
 
 

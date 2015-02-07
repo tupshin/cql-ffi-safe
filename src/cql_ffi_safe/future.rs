@@ -9,8 +9,6 @@ use cql_ffi_safe::result::CassResult;
 use cql_ffi_safe::prepared::CassPrepared;
 use cql_ffi_safe::string::CassString;
 
-use std::ptr;
-
 pub struct CassFuture(pub *mut cql_ffi::CassFuture);
 
 //~ impl Future for CassFuture {
@@ -45,14 +43,14 @@ impl CassFuture {
     }}
 
     pub fn get_prepared(&mut self) -> CassPrepared {unsafe{
-        CassPrepared(cql_ffi::cass_future_get_prepared(self.0))
+        CassPrepared(cql_ffi::cass_future_get_prepared(self.0),"".to_string())
     }}
 
     pub fn error_code(&mut self) -> Result<(),CassError> {unsafe{
         let rc = cql_ffi::cass_future_error_code(self.0);
         match rc {
             cql_ffi::CassError::CASS_OK => Ok(()),
-            err => Err(CassError(&err))
+            err => Err(CassError(err))
         }
     }}
 
