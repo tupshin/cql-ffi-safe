@@ -1,4 +1,4 @@
-[project]
+[package]
 name = "cql-ffi-safe"
 description = "A safe wrapper of the cql-ffi crate"
 license = "Apache-2.0"
